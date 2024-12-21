@@ -8,10 +8,16 @@ function displayUserData() {
     if (userData) {
       console.log("Datos del usuario leídos desde el JSON:", userData);
 
-      // Mostrar el mensaje de bienvenida
+      // Asignar el valor de la Marca
       const obtenerMarca = document.getElementById("obtenerMarca");
       if (obtenerMarca) {
         obtenerMarca.innerHTML = `<input type="hidden" id="idMarca" value="${userData.id_marca}">`;
+      }
+
+      // Asignar el valor del usuario
+      const obtenerUsuario = document.getElementById("obtenerUsuario");
+      if (obtenerUsuario) {
+        obtenerUsuario.innerHTML = `<input type="hidden" id="idUsuario" value="${userData.id_usuario}">`;
       }
 
       // Mostrar el mensaje de bienvenida

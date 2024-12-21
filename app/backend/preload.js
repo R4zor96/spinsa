@@ -89,4 +89,15 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("cargar-produccion-error", (_event, error) =>
       callback(error)
     ),
+
+  //=============================================================================================================
+  //                                              FUNCIONES Usuarios
+  //=============================================================================================================
+  // Obtener información del usuario
+  obtenerUsuarioPorId: (idUsuario) =>
+    ipcRenderer.invoke("obtener-usuario-por-id", idUsuario),
+
+  // Actualizar información del usuario
+  actualizarUsuario: (idUsuario, datos) =>
+    ipcRenderer.invoke("actualizar-usuario", { idUsuario, datos }),
 });

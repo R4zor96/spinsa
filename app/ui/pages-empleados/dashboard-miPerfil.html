@@ -254,14 +254,20 @@
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
                   <h4 class="mb-3">MI PERFIL</h4>
-                  <form class="needs-validation" novalidate>
+                  <form
+                    id="formActualizarUsuario"
+                    class="needs-validation"
+                    novalidate
+                  >
                     <div class="row g-3">
                       <div class="col-sm-4">
-                        <label for="Nombre" class="form-label">Nombre</label>
+                        <label for="nombreUsuario" class="form-label"
+                          >Nombre</label
+                        >
                         <input
                           type="text"
                           class="form-control"
-                          id="Nombre"
+                          id="nombreUsuario"
                           placeholder=""
                           value=""
                           required
@@ -272,13 +278,13 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="AP" class="form-label"
+                        <label for="apUsuario" class="form-label"
                           >Apellido Paterno</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="AP"
+                          id="apUsuario"
                           placeholder=""
                           value=""
                           required
@@ -289,13 +295,13 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="AM" class="form-label"
+                        <label for="amUsuario" class="form-label"
                           >Apellido Materno</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="AM"
+                          id="amUsuario"
                           placeholder=""
                           value=""
                           required
@@ -305,14 +311,14 @@
                         </div>
                       </div>
 
-                      <div class="col-4">
-                        <label for="email" class="form-label"
+                      <div class="col-6">
+                        <label for="correoUsuario" class="form-label"
                           >Correo Electrónico</label
                         >
                         <input
                           type="email"
                           class="form-control"
-                          id="email"
+                          id="correoUsuario"
                           placeholder="tucorreo@spinsa.com.mx"
                         />
                         <div class="invalid-feedback">
@@ -320,84 +326,18 @@
                         </div>
                       </div>
 
-                      <div class="col-4">
-                        <label for="password" class="form-label"
+                      <div class="col-6">
+                        <label for="contrasenaUsuario" class="form-label"
                           >Contraseña</label
                         >
                         <input
                           type="password"
                           class="form-control"
-                          id="password"
+                          id="contrasenaUsuario"
                           placeholder="Ingresa tu contraseña"
-                          required
                         />
-                        <div class="invalid-feedback">
-                          La contraseña es obligatoria.
-                        </div>
-                      </div>
-
-                      <div class="col-4">
-                        <label for="password" class="form-label"
-                          >Confirmar contraseña</label
-                        >
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="confirmarPassword"
-                          placeholder="Confirma tu contraseña"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Confirmar la contraseña es obligatorio.
-                        </div>
-                      </div>
-
-                      <div class="col-3">
-                        <label for="username" class="form-label"
-                          >Nombre de Usuario</label
-                        >
-                        <div class="input-group has-validation">
-                          <span class="input-group-text">@</span>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="username"
-                            placeholder="Username"
-                            required
-                          />
-                          <div class="invalid-feedback">
-                            tu nombre de usuario es requerido.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-3">
-                        <label for="telefono" class="form-label"
-                          >Numero de teléfono</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="numeroTelefono"
-                          placeholder="222 312 0965"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          tu numero de teléfono es requerido.
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <label for="marca" class="form-label">Marca</label>
-                        <select class="form-select" id="marca" required>
-                          <option value="">selecciona...</option>
-                          <option>Volkswagen</option>
-                          <option>Penta nova</option>
-                          <option>Audi</option>
-                          <option>Tesla</option>
-                        </select>
-                        <div class="invalid-feedback">
-                          se requeire una selección válida.
+                        <div class="form-text">
+                          Deja vacio para mantener la misma.
                         </div>
                       </div>
                     </div>
@@ -424,6 +364,7 @@
                       </div>
                     </div>
                   </form>
+                  <div id="mensaje" class="mt-3"></div>
                 </div>
               </div>
             </main>
@@ -431,10 +372,99 @@
         </div>
       </div>
     </div>
-    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <div id="obtenerUsuario"></div>
+
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        let currentPassword = ""; // Almacenar la contraseña actual
+
+        try {
+          // Obtener el valor del id_usuario desde el campo oculto
+          const obtenerIdUsuario = () => {
+            const idUsuarioInput = document.getElementById("idUsuario");
+            if (!idUsuarioInput) {
+              console.warn(
+                "El campo oculto con ID 'idUsuario' aún no está disponible."
+              );
+              return null;
+            }
+            return idUsuarioInput.value;
+          };
+
+          // Reintentar hasta que el campo esté disponible
+          let idUsuario = obtenerIdUsuario();
+          while (!idUsuario) {
+            await new Promise((resolve) => setTimeout(resolve, 100)); // Esperar 100ms
+            idUsuario = obtenerIdUsuario();
+          }
+
+          console.log("ID del usuario obtenida del campo oculto:", idUsuario);
+
+          // Llamar a la función para obtener los datos del usuario
+          const usuario = await window.electronAPI.obtenerUsuarioPorId(
+            idUsuario
+          );
+
+          // Llenar los campos del formulario con los datos del usuario
+          document.getElementById("idUsuario").value = usuario.id_usuario;
+          document.getElementById("nombreUsuario").value =
+            usuario.nombre_usuario;
+          document.getElementById("apUsuario").value = usuario.ap_usuario;
+          document.getElementById("amUsuario").value = usuario.am_usuario;
+          document.getElementById("correoUsuario").value =
+            usuario.correo_usuario;
+
+          // Almacenar la contraseña actual
+          currentPassword = usuario.contrasena_usuario;
+        } catch (err) {
+          console.error("Error al cargar los datos del usuario:", err);
+          alert("Hubo un error al cargar los datos del usuario.");
+        }
+
+        // Manejar el evento de guardar cambios
+        document
+          .getElementById("formActualizarUsuario")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const idUsuario = document.getElementById("idUsuario").value;
+            const datos = {
+              nombre_usuario: document.getElementById("nombreUsuario").value,
+              ap_usuario: document.getElementById("apUsuario").value,
+              am_usuario: document.getElementById("amUsuario").value,
+              correo_usuario: document.getElementById("correoUsuario").value,
+              contrasena_usuario:
+                document.getElementById("contrasenaUsuario").value ||
+                currentPassword, // Usar la contraseña actual si no se ingresa una nueva
+            };
+
+            try {
+              const result = await window.electronAPI.actualizarUsuario(
+                idUsuario,
+                datos
+              );
+              const mensajeElem = document.getElementById("mensaje");
+              mensajeElem.textContent = result.message;
+              mensajeElem.className = result.success
+                ? "text-success"
+                : "text-danger";
+
+              if (result.success) {
+                setTimeout(() => {
+                  location.reload();
+                }, 2000); // Recargar después de 2 segundos
+              }
+            } catch (err) {
+              console.error("Error al actualizar el usuario:", err);
+              alert("Hubo un error al actualizar los datos.");
+            }
+          });
+      });
+    </script>
   </body>
 </html>

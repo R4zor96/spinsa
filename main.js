@@ -362,6 +362,39 @@ ipcMain.handle(
 );
 
 //=============================================================================================================
+//                                              FUNCIONES PRODUCCIONES
+//=============================================================================================================
+const {
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+} = require("./app/models/Tabla_usuarios.js");
+
+// Obtener usuario por ID
+ipcMain.handle("obtener-usuario-por-id", async (event, idUsuario) => {
+  try {
+    return await obtenerUsuarioPorId(idUsuario);
+  } catch (err) {
+    console.error("Error al obtener el usuario:", err);
+    throw err;
+  }
+});
+
+// Actualizar usuario
+ipcMain.handle("actualizar-usuario", async (event, { idUsuario, datos }) => {
+  try {
+    const actualizado = await actualizarUsuario(idUsuario, datos);
+    if (actualizado) {
+      return { success: true, message: "Datos actualizados correctamente." };
+    } else {
+      return { success: false, message: "No se pudo actualizar el usuario." };
+    }
+  } catch (err) {
+    console.error("Error al actualizar el usuario:", err);
+    throw err;
+  }
+});
+
+//=============================================================================================================
 //                                              Tupu
 //=============================================================================================================
 app.on("window-all-closed", () => {
