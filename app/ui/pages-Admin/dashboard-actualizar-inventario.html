@@ -188,59 +188,6 @@
       </ul>
     </div>
     <div class="wrapper">
-      <aside id="sidebar">
-        <div class="d-flex">
-          <button class="toggle-btn" type="button">
-            <i class="bi bi-list"></i>
-          </button>
-          <div class="sidebar-logo">
-            <img src="../../../img/logo-blanco.png" width="50%" alt="" />
-          </div>
-        </div>
-        <ul class="sidebar-nav">
-          <li class="sidebar-item">
-            <a href="./dashboard.html" class="sidebar-link">
-              <i class="bi bi-person-circle"></i>
-              <span id="perfil"></span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-miPerfil.html" class="sidebar-link">
-              <i class="bi bi-people"></i>
-              <span>Mi perfil</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-produccion.html" class="sidebar-link">
-              <i class="bi bi-gear"></i>
-              <span>Produccion</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-inventario.html" class="sidebar-link">
-              <i class="bi bi-box"></i>
-              <span>Inventario</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
-        </ul>
-        <div class="sidebar-footer">
-          <a
-            onclick="clearUserData();"
-            href="../index.html"
-            class="sidebar-link"
-          >
-            <i class="bi bi-box-arrow-in-left"></i>
-            <span>Cerrar sesión</span>
-          </a>
-        </div>
-      </aside>
-
       <div class="main p-3">
         <div class="text-center">
           <div class="container">
@@ -248,46 +195,32 @@
               <div class="py-5 text-center">
                 <i class="bi bi-box custom-icon"></i>
                 <h2 id="tituloMarca"></h2>
-                <p class="lead">Registro de inventario</p>
+                <p class="lead">Actualizacion de inventario</p>
               </div>
 
               <hr class="my-4" />
 
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <form id="formInventario" class="needs-validation" novalidate>
+                  <form
+                    id="formActualizarInventario"
+                    class="needs-validation"
+                    novalidate
+                  >
                     <div class="row g-3">
-                      <h4 class="mb-1">Información de la pieza</h4>
-                      <div class="col-sm-6">
-                        <label for="buscadorPiezas" class="form-label"
-                          >Buscador de piezas:</label
+                      <div class="col-sm-4">
+                        <label for="nombrePieza" class="form-label"
+                          >Nombre de la Pieza</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="buscadorPiezas"
-                          placeholder="Nombre de la pieza..."
+                          id="nombrePieza"
+                          placeholder=""
+                          value=""
+                          readonly
                         />
                       </div>
-
-                      <div class="col-sm-6">
-                        <label for="piezaSeleccionada" class="form-label"
-                          >Selecciona la Pieza:</label
-                        >
-
-                        <select
-                          id="piezaSeleccionada"
-                          name="piezaSeleccionada"
-                          class="form-select"
-                          required
-                        >
-                          <!-- Las opciones se generarán dinámicamente -->
-                        </select>
-                      </div>
-
-                      <hr class="my-4" />
-
-                      <h4 class="mb-1">Información del inventario</h4>
 
                       <div class="col-sm-4">
                         <label for="cantidadInventario" class="form-label"
@@ -328,7 +261,7 @@
                         class="w-100 btn btn-primary btn-lg"
                         type="submit"
                       >
-                        Registrar Inventario
+                        Guardar Cambios
                       </button>
                     </div>
                   </form>
@@ -346,126 +279,95 @@
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
-    <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
 
     <script>
-      // Esperar a que el DOM esté completamente cargado
-      document.addEventListener("DOMContentLoaded", function () {
-        const fechaInput = document.getElementById("fechaUltimoMovimiento");
-        if (fechaInput) {
-          // Obtener la fecha actual en formato ISO (YYYY-MM-DD)
-          const hoy = new Date().toISOString().split("T")[0];
-          // Establecer la fecha como valor predeterminado
-          fechaInput.value = hoy;
-        }
-      });
-
       document.addEventListener("DOMContentLoaded", async () => {
-        const selectPiezas = document.getElementById("piezaSeleccionada");
-        const buscadorPiezas = document.getElementById("buscadorPiezas");
-        const idMarcaInput = document.getElementById("idMarca");
+        const formActualizarInventario = document.getElementById(
+          "formActualizarInventario"
+        );
 
-        if (!idMarcaInput) {
-          console.error(
-            "El campo oculto 'idMarca' no está presente en el DOM."
-          );
-          document.getElementById("mensaje").textContent =
-            "Error: No se pudo cargar el ID de la marca.";
-          return;
-        }
+        // Escuchar el inventario que el proceso principal cargó:
+        window.electronAPI.onCargarInventario(async (inventario) => {
+          try {
+            // 1. Guardamos el ID de este inventario en una variable global
+            window.inventarioId = inventario.id_inventario;
 
-        try {
-          // Obtener los datos del usuario desde el JSON
-          const userData = await window.electronAPI.readUserData();
-
-          if (!userData || !userData.id_marca) {
-            console.error(
-              "No se pudo obtener el ID de la marca del archivo JSON."
+            // 2. Obtener el nombre de la pieza
+            const pieza = await window.electronAPI.obtenerPiezaPorId(
+              inventario.id_pieza
             );
+            const nombrePieza = pieza
+              ? pieza.nombre_pieza
+              : "Pieza no encontrada";
+
+            // 3. Formatear la fecha (YYYY-MM-DD)
+            let fechaMovimiento = "";
+            if (inventario.fecha_ultimo_movimiento) {
+              const fecha = new Date(inventario.fecha_ultimo_movimiento);
+              const year = fecha.getFullYear();
+              const month = String(fecha.getMonth() + 1).padStart(2, "0");
+              const day = String(fecha.getDate()).padStart(2, "0");
+              fechaMovimiento = `${year}-${month}-${day}`;
+            }
+
+            // 4. Rellenar los campos del formulario
+            document.getElementById("nombrePieza").value = nombrePieza;
+            document.getElementById("cantidadInventario").value =
+              inventario.cantidad_inventario;
+            document.getElementById("fechaUltimoMovimiento").value =
+              fechaMovimiento;
+          } catch (error) {
+            console.error("Error al cargar el inventario o la pieza:", error);
             document.getElementById("mensaje").textContent =
-              "Error: No se pudo obtener el ID de la marca.";
-            return;
+              "Hubo un error al cargar los datos del inventario.";
           }
+        });
 
-          // Asignar el idMarca al campo oculto
-          idMarcaInput.value = userData.id_marca;
+        // Manejar el submit del formulario:
+        formActualizarInventario.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-          // Llamar a la función para obtener las piezas sin inventario
-          const piezas = await window.electronAPI.obtenerPiezasSinInventario(
-            userData.id_marca
+          const cantidadInventario =
+            document.getElementById("cantidadInventario").value;
+          const fechaUltimoMovimiento = document.getElementById(
+            "fechaUltimoMovimiento"
+          ).value;
+
+          // Empaquetar los datos en un objeto
+          const inventarioActualizado = {
+            cantidad_inventario: cantidadInventario,
+            fecha_ultimo_movimiento: fechaUltimoMovimiento,
+          };
+
+          console.log(
+            "Datos enviados para actualización:",
+            inventarioActualizado
           );
 
-          if (!piezas || piezas.length === 0) {
-            console.error("No hay piezas disponibles para esta marca.");
-            document.getElementById("mensaje").textContent =
-              "No hay piezas disponibles para registrar en el inventario.";
-            return;
-          }
+          try {
+            const result = await window.electronAPI.actualizarInventario(
+              // IMPORTANTE: usar window.inventarioId
+              window.inventarioId,
+              inventarioActualizado
+            );
 
-          // Llenar el desplegable con las piezas
-          piezas.forEach((pieza) => {
-            const option = document.createElement("option");
-            option.value = pieza.id_pieza; // El ID de la pieza será el valor
-            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
-            selectPiezas.appendChild(option);
-          });
-
-          // Agregar evento al buscador para filtrar las opciones
-          buscadorPiezas.addEventListener("input", () => {
-            const filtro = buscadorPiezas.value.toLowerCase();
-            const opciones = selectPiezas.options;
-
-            // Mostrar/ocultar opciones según el filtro
-            for (let i = 0; i < opciones.length; i++) {
-              const texto = opciones[i].textContent.toLowerCase();
-              opciones[i].style.display = texto.includes(filtro)
-                ? "block"
-                : "none";
-            }
-          });
-        } catch (err) {
-          console.error("Error al cargar los datos del inventario:", err);
-          document.getElementById("mensaje").textContent =
-            "Hubo un error al cargar los datos. Intenta nuevamente.";
-        }
-
-        // Manejar el evento de registrar inventario
-        document
-          .getElementById("formInventario")
-          .addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const idMarca = idMarcaInput.value;
-            const idPieza = document.getElementById("piezaSeleccionada").value;
-            const cantidadInventario =
-              document.getElementById("cantidadInventario").value;
-            const fechaUltimoMovimiento = document.getElementById(
-              "fechaUltimoMovimiento"
-            ).value;
-
-            const inventarioData = {
-              idMarca,
-              idPieza,
-              cantidadInventario,
-              fechaUltimoMovimiento,
-            };
-
-            try {
-              const inventarioId = await window.electronAPI.insertarInventario(
-                inventarioData
-              );
-              document.getElementById("mensaje").textContent =
-                "Inventario registrado con éxito.";
+            if (result.success) {
+              document.getElementById("mensaje").textContent = result.message;
               setTimeout(() => {
-                location.reload(); // Recargar la página después de 2 segundos
+                // Redirigir al dashboard principal (o a donde gustes)
+                window.location.href = "dashboard-admin.html";
               }, 2000);
-            } catch (error) {
-              console.error("Error al registrar el inventario:", error);
-              document.getElementById("mensaje").textContent =
-                "Error al registrar el inventario. Por favor, intenta de nuevo.";
+            } else {
+              // Mostrar mensaje de error
+              document.getElementById("mensaje").textContent = result.message;
             }
-          });
+          } catch (error) {
+            console.error("Error al actualizar el inventario:", error);
+            document.getElementById("mensaje").textContent =
+              "Hubo un error al actualizar el inventario.";
+          }
+        });
       });
     </script>
   </body>

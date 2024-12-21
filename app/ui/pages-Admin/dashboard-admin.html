@@ -296,6 +296,8 @@
                 height="380"
               ></canvas>
 
+              <hr />
+
               <h2>PRODUCCIÓN</h2>
               <div class="table-responsive small">
                 <table
@@ -319,6 +321,33 @@
                   </tbody>
                 </table>
               </div>
+
+              <hr />
+
+              <h2>INVENTARIO</h2>
+              <div class="table-responsive small">
+                <table
+                  id="tablaInventarios"
+                  class="table table-striped table-sm"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">ID Inventario</th>
+                      <th scope="col">Marca</th>
+                      <th scope="col">Nombre de Pieza</th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">Fecha Último Movimiento</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Las filas se generarán dinámicamente aquí -->
+                  </tbody>
+                </table>
+              </div>
+
+              <hr />
+
               <h2>PIEZAS</h2>
               <div class="table-responsive small">
                 <table id="tablaPiezas" class="table table-striped table-sm">
@@ -535,6 +564,130 @@
             "Error al eliminar la producción. Por favor, intenta de nuevo."
           );
         }
+      }
+
+      //===============================================================================================================
+      //                                            FUNCIONES INVENTARIO
+      //===============================================================================================================
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          // 1. Llamar a la nueva función para obtener TODOS los inventarios
+          const inventarios =
+            await window.electronAPI.obtenerTodosLosInventarios();
+
+          // 2. Obtener la referencia de la tabla
+          const tabla = document.getElementById("tablaInventarios");
+          if (!tabla) {
+            console.error("La tabla con ID 'tablaInventarios' no se encontró.");
+            return;
+          }
+
+          // 3. Iterar sobre los inventarios y agregarlos a la tabla
+          for (const inventario of inventarios) {
+            const fila = document.createElement("tr");
+
+            // Si en tu consulta SQL ya estás haciendo JOIN con la tabla de piezas y marcas,
+            // tendrás inventario.nombre_pieza y inventario.nombre_marca:
+            //  - inventario.nombre_marca
+            //  - inventario.nombre_pieza
+
+            // Formatea la fecha en caso de que exista
+            const fechaFormateada = inventario.fecha_ultimo_movimiento
+              ? new Date(inventario.fecha_ultimo_movimiento)
+                  .toISOString()
+                  .split("T")[0]
+              : "Sin Fecha";
+
+            // Generar la fila
+            fila.innerHTML = `
+          <td>${inventario.id_inventario}</td>
+          <td>${inventario.nombre_marca || "Marca desconocida"}</td>
+          <td>${inventario.nombre_pieza || "Pieza no encontrada"}</td>
+          <td>${inventario.cantidad_inventario}</td>
+          <td>${fechaFormateada}</td>
+          <td>
+            <div class="d-flex justify-content-center gap-1">
+              <button
+                onclick="actualizarInventario(${inventario.id_inventario})"
+                type="button"
+                class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded"
+              >
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button
+                onclick="eliminarInventario(${inventario.id_inventario})"
+                type="button"
+                class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded"
+              >
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+            </div>
+          </td>
+        `;
+
+            tabla.querySelector("tbody").appendChild(fila);
+          }
+        } catch (err) {
+          console.error("Error al cargar todos los inventarios:", err);
+        }
+      });
+
+      // Ejemplo de funciones para actualizar y eliminar (ajústalas a tu flujo):
+      async function actualizarInventario(idInventario) {
+        console.log(`Actualizar inventario con ID: ${idInventario}`);
+        // Aquí llamas a la función de redirección del preload si la tienes:
+        // window.electronAPI.redirigirActualizarInventario(idInventario);
+      }
+
+      async function eliminarInventario(idInventario) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este inventario?")) {
+          return;
+        }
+        try {
+          const resultado = await window.electronAPI.eliminarInventario(
+            idInventario
+          );
+          if (resultado.success) {
+            alert(resultado.message);
+            location.reload();
+          } else {
+            alert("No se pudo eliminar el inventario.");
+          }
+        } catch (err) {
+          console.error("Error al eliminar el inventario:", err);
+          alert("Hubo un error al intentar eliminar el inventario.");
+        }
+      }
+
+      async function eliminarInventario(idInventario) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este inventario?")) {
+          return; // Cancelar la eliminación
+        }
+
+        try {
+          const resultado = await window.electronAPI.eliminarInventario(
+            idInventario
+          );
+
+          if (resultado.success) {
+            alert(resultado.message);
+            // Recargar la página para actualizar la tabla
+            location.reload();
+          } else {
+            alert("No se pudo eliminar el inventario.");
+          }
+        } catch (err) {
+          console.error("Error al eliminar el inventario:", err);
+          alert("Hubo un error al intentar eliminar el inventario.");
+        }
+      }
+
+      function actualizarInventario(idInventario) {
+        console.log(
+          `Redirigiendo al dashboard para actualizar el inventario con ID: ${idInventario}`
+        );
+        window.electronAPI.redirigirActualizarInventario(idInventario);
       }
     </script>
   </body>

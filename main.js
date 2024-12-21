@@ -454,7 +454,14 @@ ipcMain.handle("actualizar-usuario", async (event, { idUsuario, datos }) => {
 //=============================================================================================================
 //                                              FUNCIONES INVENTARIOS
 //=============================================================================================================
-const { insertarInventario } = require("./app/models/Tabla_inventarios.js");
+const {
+  insertarInventario,
+  obtenerInventariosPorMarca,
+  eliminarInventario,
+  obtenerInventarioPorId,
+  actualizarInventario,
+  obtenerTodosLosInventarios,
+} = require("./app/models/Tabla_inventarios.js");
 
 // Manejador para insertar inventario
 ipcMain.handle(
@@ -482,6 +489,112 @@ ipcMain.handle(
     }
   }
 );
+
+// Manejador para obtener inventarios por marca
+ipcMain.handle("obtener-inventarios", async (event, idMarca) => {
+  try {
+    const inventarios = await obtenerInventariosPorMarca(idMarca);
+    return inventarios; // Devuelve los inventarios al renderer
+  } catch (err) {
+    console.error("Error al obtener los inventarios:", err);
+    throw err;
+  }
+});
+
+// Manejador para eliminar un inventario
+ipcMain.handle("eliminar-inventario", async (event, idInventario) => {
+  try {
+    await eliminarInventario(idInventario);
+    console.log(`Inventario con ID ${idInventario} eliminado correctamente.`);
+    return { success: true, message: "Inventario eliminado correctamente." };
+  } catch (err) {
+    console.error(
+      `Error al eliminar el inventario con ID ${idInventario}:`,
+      err
+    );
+    return { success: false, message: "Error al eliminar el inventario." };
+  }
+});
+
+//redireccionar al dashboard:
+ipcMain.handle(
+  "redirigir-actualizar-inventario",
+  async (event, idInventario) => {
+    try {
+      // Leer los datos del usuario desde el archivo JSON
+      const userData = readUserData();
+      if (!userData || !userData.id_rol) {
+        throw new Error(
+          "No se encontró la información del usuario o el id_rol."
+        );
+      }
+
+      const { id_rol } = userData;
+
+      // Redirigir según el rol del usuario
+      if (id_rol === 128) {
+        mainWindow.loadFile(
+          "src/app/ui/pages-admin/dashboard-actualizar-inventario.html"
+        );
+      } else {
+        mainWindow.loadFile(
+          "src/app/ui/pages-empleados/dashboard-actualizar-inventario.html"
+        );
+      }
+
+      // Pasar los datos del inventario al dashboard
+      mainWindow.webContents.once("did-finish-load", async () => {
+        const inventario = await obtenerInventarioPorId(idInventario);
+        if (inventario) {
+          mainWindow.webContents.send("cargar-inventario", inventario);
+        } else {
+          mainWindow.webContents.send(
+            "cargar-inventario-error",
+            `No se encontró el inventario con ID ${idInventario}`
+          );
+        }
+      });
+    } catch (err) {
+      console.error("Error al redirigir al dashboard de actualización:", err);
+    }
+  }
+);
+
+//Actualizar inventario:
+ipcMain.handle(
+  "actualizar-inventario",
+  async (event, { idInventario, datos }) => {
+    try {
+      console.log("Datos recibidos para actualización:", {
+        idInventario,
+        datos,
+      });
+      await actualizarInventario(idInventario, datos);
+
+      console.log(`Inventario con ID ${idInventario} actualizado con éxito.`);
+      return { success: true, message: "Inventario actualizado con éxito." };
+    } catch (err) {
+      console.error(
+        `Error al actualizar el inventario con ID ${idInventario}:`,
+        err
+      );
+      // Retorna el error capturado para que en el frontend
+      // aparezca un mensaje más claro si quieres
+      return { success: false, message: err.message };
+    }
+  }
+);
+
+// Manejador para obtener *todos* los inventarios (de todas las marcas)
+ipcMain.handle("obtener-todos-los-inventarios", async (event) => {
+  try {
+    const inventarios = await obtenerTodosLosInventarios();
+    return inventarios; // Devolvemos la lista al renderer
+  } catch (err) {
+    console.error("Error al obtener todos los inventarios:", err);
+    throw err;
+  }
+});
 
 //=============================================================================================================
 //                                              Tupu

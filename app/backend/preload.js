@@ -115,4 +115,36 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para insertar un nuevo inventario
   insertarInventario: (inventarioData) =>
     ipcRenderer.invoke("insertar-inventario", inventarioData),
+
+  //Obtener inventarios
+  obtenerInventarios: (idMarca) =>
+    ipcRenderer.invoke("obtener-inventarios", idMarca),
+
+  // Función para eliminar un inventario
+  eliminarInventario: (idInventario) =>
+    ipcRenderer.invoke("eliminar-inventario", idInventario),
+
+  //Funcion redirigir al dashboard
+  redirigirActualizarInventario: (idInventario) =>
+    ipcRenderer.invoke("redirigir-actualizar-inventario", idInventario),
+
+  //Actualizar inventario
+  actualizarInventario: (idInventario, datos) =>
+    ipcRenderer.invoke("actualizar-inventario", { idInventario, datos }),
+
+  // Escuchar datos del inventario
+  onCargarInventario: (callback) =>
+    ipcRenderer.on("cargar-inventario", (_event, inventario) =>
+      callback(inventario)
+    ),
+
+  // Manejar errores al cargar el inventario
+  onCargarInventarioError: (callback) =>
+    ipcRenderer.on("cargar-inventario-error", (_event, error) =>
+      callback(error)
+    ),
+
+  // Función para obtener *todos* los inventarios
+  obtenerTodosLosInventarios: () =>
+    ipcRenderer.invoke("obtener-todos-los-inventarios"),
 });
