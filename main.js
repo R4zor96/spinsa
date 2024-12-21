@@ -65,7 +65,12 @@ async function login(correo, password) {
       // Guardar datos en el archivo JSON
       saveUserData(currentUser);
 
-      const { id_rol } = currentUser;
+      const [userData] = currentUser;
+      const { id_rol } = userData;
+
+      console.log("datos de current user:", currentUser);
+      console.log("datos de la variable de id_rol:", id_rol);
+
       switch (id_rol) {
         case 128:
           mainWindow.loadFile("src/app/ui/pages-admin/dashboard-admin.html");

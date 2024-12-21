@@ -1,18 +1,20 @@
-const mysql = require("promise-mysql");
+//const mysql = require("promise-mysql");
+const mysql = require("mysql2/promise");
 
 const connection = mysql.createConnection({
-  host: "localhost",
+  host: "junction.proxy.rlwy.net",
   user: "root",
-  password: "",
+  password: "GxgyUgLUokvFwsjObvIQBCOXpGNFuSPj",
   database: "spinsa",
+  port: 20605,
 });
 
 connection
   .then(() => {
-    console.log("Conexion exitosa a la base de datos");
+    console.log("Conexión exitosa a la base de datos remota");
   })
   .catch((err) => {
-    console.error("Error al conectar a la base de datos: ", err);
+    console.error("Error al conectar a la base de datos remota: ", err);
   });
 
 function getConnection() {

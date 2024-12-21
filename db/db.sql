@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS spinsa;
 CREATE DATABASE IF NOT EXISTS spinsa DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE spinsa;
---------------------CREACION DE TABLAS------------------------------------
 -- Tabla de roles
 CREATE TABLE roles (
     id_rol INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -20,7 +19,7 @@ CREATE TABLE usuario (
     nombre_usuario VARCHAR(50) NOT NULL,
     ap_usuario VARCHAR(50) NOT NULL,
     am_usuario VARCHAR(50) NOT NULL,
-    estatus_usuario VARCHAR(20) NOT NULL,
+    estatus_usuario varchar(20) NOT NULL,
     correo_usuario VARCHAR(100) NOT NULL UNIQUE,
     contrasena_usuario VARCHAR(255) NOT NULL,
     id_rol INT NOT NULL,
@@ -65,10 +64,10 @@ CREATE TABLE produccion (
 --
 --
 --
---------------------INGRESO DE DATOS BASICOS------------------------------------
+-- ------------------INGRESO DE DATOS BASICOS------------------------------------
 --
 --
---Insert ROLES:
+-- Insert ROLES:
 INSERT INTO roles (id_rol, nombre_rol, descripcion_permisos)
 VALUES (
         128,
@@ -80,7 +79,7 @@ VALUES (
         'Administrador de Marca',
         'permisos para una sola marca'
     );
---Insert MARCA:
+-- Insert MARCA:
 INSERT INTO marca (id_marca, nombre_marca)
 VALUES(4, 'Audi'),
     (3, 'Penta nova'),
