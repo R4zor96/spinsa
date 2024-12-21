@@ -355,8 +355,8 @@
                         </div>
                         <div class="col-6">
                           <button
+                            id="cancelar"
                             class="w-100 btn btn-danger btn-lg"
-                            type="submit"
                           >
                             Cancelar
                           </button>
@@ -380,6 +380,12 @@
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
+      document
+        .getElementById("cancelar")
+        .addEventListener("click", function () {
+          window.location.href = "./dashboard.html";
+        });
+
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           const obtenerIdUsuario = () => {

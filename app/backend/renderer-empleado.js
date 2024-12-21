@@ -53,6 +53,12 @@ function displayUserData() {
       if (perfil) {
         perfil.innerHTML = `Empleado: ${userData.nombre_usuario}`;
       }
+
+      //Mostrar nombre en el perfil
+      const perfil2 = document.getElementById("perfil2");
+      if (perfil2) {
+        perfil2.innerHTML = `Admin: ${userData.nombre_usuario}`;
+      }
       //=========EJEMPLO=====================================
       // Mostrar otros datos si es necesario
       const userInfo = document.getElementById("userInfo");
