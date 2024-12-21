@@ -1,0 +1,1 @@
+SELECT * FROM usuarios WHERE correo_usuario = 'avimael.herrera@spinsa.com.mx' and password_usuario = SHA2('AVJimenezH25#', 256);
