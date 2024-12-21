@@ -201,7 +201,7 @@
           <li class="sidebar-item">
             <a href="./dashboard.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">AUDI</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
@@ -247,40 +247,59 @@
             <main>
               <div class="py-5 text-center">
                 <i class="bi bi-gear custom-icon"></i>
-                <h2>Volkswagen</h2>
-                <p class="lead">ingresar pieza volkswagen</p>
+                <h2 id="tituloMarca"></h2>
+                <p class="lead">Registro de produccion</p>
               </div>
 
               <hr class="my-4" />
 
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <h4 class="mb-3">CREAR PIEZA VOLKSWAGEN</h4>
-                  <form class="needs-validation" novalidate>
+                  <form id="formProduccion" class="needs-validation" novalidate>
                     <div class="row g-3">
-                      <div class="col-sm-4">
-                        <label for="firstName" class="form-label">Nombre</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="firstName"
-                          placeholder=""
-                          value=""
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere un nombre válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
-                        <label for="lastName" class="form-label"
-                          >Folio de envio</label
+                      <h4 class="mb-1">Información de la pieza</h4>
+                      <div class="col-sm-6">
+                        <label for="buscadorPiezas" class="form-label"
+                          >Buscador de piezas:</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="lastName"
+                          id="buscadorPiezas"
+                          placeholder="Nombre de la pieza..."
+                        />
+                      </div>
+
+                      <div class="col-sm-6">
+                        <label for="piezaSeleccionada" class="form-label"
+                          >Selecciona la Pieza:</label
+                        >
+
+                        <select
+                          id="piezaSeleccionada"
+                          name="piezaSeleccionada"
+                          class="form-select"
+                          required
+                        >
+                          <!-- Las opciones se generarán dinámicamente -->
+                        </select>
+                        <div class="invalid-feedback">
+                          No ha seleccionado una pieza.
+                        </div>
+                      </div>
+
+                      <hr class="my-4" />
+
+                      <h4 class="mb-1">Información de la producción</h4>
+
+                      <div class="col-sm-4">
+                        <label for="folioProduccion" class="form-label"
+                          >Folio</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="folioProduccion"
                           placeholder=""
                           value=""
                           required
@@ -291,13 +310,76 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="fechaSalida" class="form-label"
-                          >Fecha salida</label
+                        <label for="nombreProduccion" class="form-label"
+                          >Nombre de produccion</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="nombreProduccion"
+                          placeholder=""
+                          value=""
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Se requiere un nombre válido.
+                        </div>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="cantidadProduccion" class="form-label"
+                          >Cantidad</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="cantidadProduccion"
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Se requiere una cantidad válida.
+                        </div>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="estatusProduccion" class="form-label"
+                          >Estatus</label
+                        >
+                        <select
+                          id="estatusProduccion"
+                          name="estatusProduccion"
+                          class="form-select"
+                          required
+                        >
+                          <option value="En Proceso">En Proceso</option>
+                          <option value="Finalizado">Finalizado</option>
+                          <option value="Cancelado">Cancelado</option>
+                        </select>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="aprobadoProduccion" class="form-label"
+                          >Aprobado:</label
+                        >
+                        <select
+                          id="aprobadoProduccion"
+                          class="form-select"
+                          name="aprobadoProduccion"
+                          required
+                        >
+                          <option value="0">No aprobado</option>
+                          <option value="1">Aprobado</option>
+                        </select>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="fsProduccion" class="form-label"
+                          >Fecha de salida</label
                         >
                         <input
                           type="date"
                           class="form-control"
-                          id="fechaSalida"
+                          id="fsProduccion"
                           required
                         />
                         <div class="invalid-feedback">
@@ -306,47 +388,15 @@
                       </div>
 
                       <div class="col-12">
-                        <label for="descripcion" class="form-label"
+                        <label for="descripcionProduccion" class="form-label"
                           >Descripción</label
                         >
                         <textarea
                           class="form-control"
-                          id="descripcion"
-                          rows="4"
+                          id="descripcionProduccion"
+                          rows="3"
                           placeholder="Escribe una descripción aquí..."
-                          required
                         ></textarea>
-                        <div class="invalid-feedback">
-                          Se requiere una descripción válida.
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Estatus Activo
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Aprobado
-                          </label>
-                        </div>
                       </div>
 
                       <hr class="my-4" />
@@ -355,10 +405,12 @@
                         class="w-100 btn btn-primary btn-lg"
                         type="submit"
                       >
-                        Ingresar usuario
+                        Registrar Producción
                       </button>
                     </div>
                   </form>
+                  <br />
+                  <div id="mensaje"></div>
                 </div>
               </div>
             </main>
@@ -371,5 +423,100 @@
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const selectPiezas = document.getElementById("piezaSeleccionada");
+        const buscadorPiezas = document.getElementById("buscadorPiezas");
+
+        try {
+          // Llamar a la función para obtener todas las piezas
+          const piezas = await window.electronAPI.obtenerPiezas();
+
+          if (!piezas || piezas.length === 0) {
+            console.error("No hay piezas disponibles.");
+            return;
+          }
+
+          // Llenar el desplegable con las piezas
+          piezas.forEach((pieza) => {
+            const option = document.createElement("option");
+            option.value = pieza.id_pieza; // El ID de la pieza será el valor
+            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
+            selectPiezas.appendChild(option);
+          });
+
+          // Agregar evento al buscador para filtrar las opciones
+          buscadorPiezas.addEventListener("input", () => {
+            const filtro = buscadorPiezas.value.toLowerCase();
+            const opciones = selectPiezas.options;
+
+            // Mostrar/ocultar opciones según el filtro
+            for (let i = 0; i < opciones.length; i++) {
+              const texto = opciones[i].textContent.toLowerCase();
+              opciones[i].style.display = texto.includes(filtro)
+                ? "block"
+                : "none";
+            }
+          });
+        } catch (err) {
+          console.error("Error al cargar las piezas:", err);
+        }
+      });
+
+      // Agregar evento para registrar la producción
+      document
+        .getElementById("formProduccion")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const idPieza = document.getElementById("piezaSeleccionada").value;
+          const folioProduccion =
+            document.getElementById("folioProduccion").value;
+          const cantidadProduccion =
+            document.getElementById("cantidadProduccion").value;
+          const estatusProduccion =
+            document.getElementById("estatusProduccion").value;
+          const aprobadoProduccion =
+            document.getElementById("aprobadoProduccion").value; // Ahora obtenemos el valor del desplegable
+          const nombreProduccion =
+            document.getElementById("nombreProduccion").value;
+          const descripcionProduccion =
+            document.getElementById("descripcionProduccion").value || null;
+          const fsProduccion =
+            document.getElementById("fsProduccion").value || null;
+
+          // Obtener el idMarca desde el JSON
+          const userData = await window.electronAPI.readUserData();
+          if (!userData || !userData.id_marca) {
+            console.error("El ID de la marca no está disponible.");
+            return;
+          }
+
+          const produccionData = {
+            idMarca: userData.id_marca,
+            idPieza,
+            folioProduccion,
+            cantidadProduccion,
+            estatusProduccion,
+            aprobadoProduccion, // Se envía directamente el valor del desplegable
+            nombreProduccion,
+            descripcionProduccion,
+            fsProduccion,
+          };
+
+          try {
+            const produccionId = await window.electronAPI.insertarProduccion(
+              produccionData
+            );
+            document.getElementById(
+              "mensaje"
+            ).textContent = `Producción registrada con éxito.`;
+          } catch (error) {
+            console.error("Error al registrar la producción:", error);
+            document.getElementById("mensaje").textContent =
+              "Error al registrar la producción. Por favor, intenta de nuevo.";
+          }
+        });
+    </script>
   </body>
 </html>

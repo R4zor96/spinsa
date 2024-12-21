@@ -149,7 +149,10 @@ ipcMain.on("request-user-data", (event) => {
 //=============================================================================================================
 //                                              FUNCIONES PIEZAS
 //=============================================================================================================
-const { insertarPieza } = require("./app/models/Tabla_piezas.js");
+const {
+  insertarPieza,
+  obtenerPiezas,
+} = require("./app/models/Tabla_piezas.js");
 
 // Manejador para insertar pieza
 ipcMain.handle(
@@ -173,6 +176,78 @@ ipcMain.handle(
   }
 );
 
+// Manejador para obtener los registros de piezas
+ipcMain.handle("obtener-piezas", async () => {
+  try {
+    const piezas = await obtenerPiezas();
+    return piezas; // Devuelve los registros al renderer
+  } catch (err) {
+    console.error("Error al obtener los registros de piezas:", err);
+    throw err; // Lanza el error para manejarlo en el renderer
+  }
+});
+//=============================================================================================================
+//                                              FUNCIONES PRODUCCIONES
+//=============================================================================================================
+const {
+  obtenerProduccionesPorMarca,
+  insertarProduccion,
+  eliminarProduccion,
+} = require("./app/models/Tabla_producciones.js");
+
+// Manejador para insertar una nueva producción
+ipcMain.handle("insertar-produccion", async (event, produccionData) => {
+  try {
+    const produccionId = await insertarProduccion(
+      produccionData.idMarca,
+      produccionData.idPieza,
+      produccionData.folioProduccion,
+      produccionData.cantidadProduccion,
+      produccionData.estatusProduccion,
+      produccionData.aprobadoProduccion,
+      produccionData.nombreProduccion,
+      produccionData.descripcionProduccion,
+      produccionData.fsProduccion
+    );
+
+    // Programar recarga después de 2 segundos
+    setTimeout(() => {
+      if (mainWindow) {
+        mainWindow.webContents.reload(); // Recargar la página actual
+      }
+    }, 1350); // Esperar 2000 ms (2 segundos)
+
+    return produccionId; // Devuelve el ID de la producción insertada
+  } catch (err) {
+    console.error("Error al insertar la producción:", err);
+    throw err;
+  }
+});
+
+// Manejador para obtener producciones de una marca
+ipcMain.handle("obtener-producciones", async (event, idMarca) => {
+  try {
+    const producciones = await obtenerProduccionesPorMarca(idMarca);
+    return producciones; // Devuelve las producciones al renderer
+  } catch (err) {
+    console.error("Error al obtener las producciones:", err);
+    throw err;
+  }
+});
+
+// Manejador para eliminar una producción
+ipcMain.handle("eliminar-produccion", async (event, idProduccion) => {
+  try {
+    await eliminarProduccion(idProduccion);
+    console.log(`Producción con ID ${idProduccion} eliminada.`);
+  } catch (err) {
+    console.error(
+      `Error al eliminar la producción con ID ${idProduccion}:`,
+      err
+    );
+    throw err; // Lanza el error para manejarlo en el renderer
+  }
+});
 //=============================================================================================================
 //                                              Tupu
 //=============================================================================================================

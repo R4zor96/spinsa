@@ -201,7 +201,7 @@
           <li class="sidebar-item">
             <a href="./dashboard.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">AUDI</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
@@ -312,5 +312,31 @@
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      //Insertar piezas
+      document
+        .getElementById("formPieza")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const nombrePieza = document.getElementById("nombrePieza").value;
+          const descripcionPieza =
+            document.getElementById("descripcionPieza").value;
+
+          try {
+            // Llamar a la función expuesta en el preload
+            const piezaId = await window.electronAPI.insertarPieza(
+              nombrePieza,
+              descripcionPieza
+            );
+            document.getElementById(
+              "mensaje"
+            ).textContent = `Pieza guardada con éxito.`;
+          } catch (error) {
+            document.getElementById("mensaje").textContent =
+              "Error al guardar la pieza. Por favor, intenta de nuevo.";
+          }
+        });
+    </script>
   </body>
 </html>

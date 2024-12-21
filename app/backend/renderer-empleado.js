@@ -9,11 +9,40 @@ function displayUserData() {
       console.log("Datos del usuario leídos desde el JSON:", userData);
 
       // Mostrar el mensaje de bienvenida
+      const obtenerMarca = document.getElementById("obtenerMarca");
+      if (obtenerMarca) {
+        obtenerMarca.innerHTML = `<input type="hidden" id="idMarca" value="${userData.id_marca}">`;
+      }
+
+      // Mostrar el mensaje de bienvenida
       const welcomeMessage = document.getElementById("welcomeMessage");
       if (welcomeMessage) {
         welcomeMessage.textContent = `BIENVENIDO ${userData.nombre_usuario.toUpperCase()}`;
       }
 
+      // Mostrar la marca
+      const tituloMarca = document.getElementById("tituloMarca");
+      id_marca = userData.id_marca;
+      if (tituloMarca && id_marca) {
+        switch (id_marca) {
+          case 1:
+            tituloMarca.textContent = `VOLKSWAGEN`;
+            break;
+          case 2:
+            tituloMarca.textContent = `TESLA`;
+            break;
+          case 3:
+            tituloMarca.textContent = `PENTA NOVA`;
+            break;
+          case 4:
+            tituloMarca.textContent = `AUDI`;
+            break;
+        }
+      } else {
+        console.log("error, id_marca es nulo");
+      }
+
+      //Mostrar nombre en el perfil
       const perfil = document.getElementById("perfil");
       if (perfil) {
         perfil.innerHTML = `Empleado: ${userData.nombre_usuario}`;
@@ -46,28 +75,4 @@ function clearUserData() {
 // Solicitar datos al cargar el dashboard
 document.addEventListener("DOMContentLoaded", () => {
   displayUserData();
-});
-
-//=============================================================================================================
-//                                              FUNCIONES PIEZAS
-//=============================================================================================================
-document.getElementById("formPieza").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const nombrePieza = document.getElementById("nombrePieza").value;
-  const descripcionPieza = document.getElementById("descripcionPieza").value;
-
-  try {
-    // Llamar a la función expuesta en el preload
-    const piezaId = await window.electronAPI.insertarPieza(
-      nombrePieza,
-      descripcionPieza
-    );
-    document.getElementById(
-      "mensaje"
-    ).textContent = `Pieza guardada con éxito.`;
-  } catch (error) {
-    document.getElementById("mensaje").textContent =
-      "Error al guardar la pieza. Por favor, intenta de nuevo.";
-  }
 });

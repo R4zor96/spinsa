@@ -122,6 +122,7 @@
       href="../../../recursos/recursos-panel/css/dashboard.rtl.css"
     />
     <script defer src="../../backend/renderer-empleado.js"></script>
+    <script defer src="../../backend/renderer-empleado.js"></script>
   </head>
 
   <body>
@@ -209,7 +210,7 @@
           <li class="sidebar-item">
             <a href="./dashboard.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">AUDI</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
@@ -298,107 +299,39 @@
 
               <h2>PRODUCCIÓN</h2>
               <div class="table-responsive small">
-                <table class="table table-striped table-sm">
+                <table
+                  id="tablaProducciones"
+                  class="table table-striped table-sm"
+                >
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Pieza</th>
-                      <th scope="col">Marca</th>
-                      <th scope="col">Cantidad</th>
-                      <th scope="col">Fecha Salida</th>
-                      <th scope="col">Aprobación</th>
                       <th scope="col">Folio</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Cantidad</th>
                       <th scope="col">Estatus</th>
+                      <th scope="col">Aprobación</th>
+                      <th scope="col">Fecha Salida</th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1,001</td>
-                      <td>random</td>
-                      <td>data</td>
-                      <td>placeholder</td>
-                      <td>text</td>
-                      <td>text</td>
-                      <td>text</td>
-                      <td>
-                        <a
-                          href="#"
-                          type="button"
-                          class="btn btn-outline-success btn-md d-block m-2 shadow-sm rounded"
-                        >
-                          <i class="bi bi-arrow-repeat"></i> Habilitar
-                        </a>
-                      </td>
-                      <td>
-                        <div
-                          class="d-flex flex-column align-items-center gap-2"
-                        >
-                          <button
-                            onclick="actualizarProduccion()"
-                            type="button"
-                            class="btn btn-warning btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-pencil-square text-white"></i>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-trash3-fill"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Las filas se generarán dinámicamente aquí -->
                   </tbody>
                 </table>
               </div>
               <h2>PIEZAS</h2>
               <div class="table-responsive small">
-                <table class="table table-striped table-sm">
+                <table id="tablaPiezas" class="table table-striped table-sm">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Pieza</th>
+                      <th scope="col">Nombre</th>
                       <th scope="col">descripcion</th>
-                      <th scope="col">Estatus</th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>random</td>
-                      <td>data</td>
-                      <td>
-                        <a
-                          href="#"
-                          type="button"
-                          class="btn btn-outline-success btn-md d-block m-2 shadow-sm rounded"
-                        >
-                          <i class="bi bi-arrow-repeat"></i> Habilitar
-                        </a>
-                      </td>
-                      <td>
-                        <div
-                          class="d-flex flex-column align-items-center gap-2"
-                        >
-                          <button
-                            onclick="actualizarPieza()"
-                            type="button"
-                            class="btn btn-warning btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-pencil-square text-white"></i>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-trash3-fill"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Las filas se generarán dinámicamente aquí -->
                   </tbody>
                 </table>
               </div>
@@ -408,10 +341,172 @@
       </div>
     </div>
 
+    <div id="obtenerMarca"></div>
+
     <script src="../../../../node_modules/chart.js/dist/chart.umd.js"></script>
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos-panel/js/dashboard.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      //===============================================================================================================
+      //                                            FUNCIONES PIEZAS
+      //===============================================================================================================
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const piezas = await window.electronAPI.obtenerPiezas();
+
+          const tabla = document.getElementById("tablaPiezas");
+
+          if (!tabla) {
+            console.error("La tabla con ID 'tablaPiezas' no se encontró.");
+            return;
+          }
+
+          piezas.forEach((pieza) => {
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+              <td>${pieza.id_pieza}</td>
+              <td>${pieza.nombre_pieza}</td>
+              <td>${pieza.descripcion_pieza}</td>
+              <td>
+                <div class="d-flex justify-content-center gap-1">
+                  <button
+                    onclick="actualizarPieza(${pieza.id_pieza})"
+                    type="button"
+                    class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button
+                    onclick="eliminarPieza(${pieza.id_pieza})"
+                    type="button"
+                    class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded">
+                    <i class="bi bi-trash3-fill"></i>
+                  </button>
+                </div>
+              </td>
+            `;
+
+            tabla.querySelector("tbody").appendChild(fila);
+          });
+        } catch (err) {
+          console.error("Error al cargar los registros de piezas:", err);
+        }
+      });
+      //===============================================================================================================
+      //                                            FUNCIONES PRODUCCIONES
+      //===============================================================================================================
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          // Verificar y obtener el valor del id_marca desde el campo oculto
+          const obtenerIdMarca = () => {
+            const idMarcaInput = document.getElementById("idMarca");
+            if (!idMarcaInput) {
+              console.warn(
+                "El campo oculto con ID 'idMarca' aún no está disponible."
+              );
+              return null;
+            }
+            return idMarcaInput.value;
+          };
+
+          // Reintentar hasta que el campo esté disponible
+          let idMarca = obtenerIdMarca();
+          while (!idMarca) {
+            await new Promise((resolve) => setTimeout(resolve, 100)); // Esperar 100ms
+            idMarca = obtenerIdMarca();
+          }
+
+          console.log("ID de la marca obtenida del campo oculto:", idMarca);
+
+          // Llamar a la función para obtener las producciones de la marca
+          const producciones = await window.electronAPI.obtenerProducciones(
+            idMarca
+          );
+
+          // Obtener la referencia de la tabla
+          const tabla = document.getElementById("tablaProducciones");
+
+          if (!tabla) {
+            console.error(
+              "La tabla con ID 'tablaProducciones' no se encontró."
+            );
+            return;
+          }
+
+          // Iterar sobre las producciones y agregarlas a la tabla
+          producciones.forEach((produccion) => {
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+        <td>${produccion.folio_produccion}</td>
+        <td>${produccion.nombre_produccion}</td>
+        <td>${produccion.cantidad_produccion}</td>
+        <td>${produccion.estatus_produccion}</td>
+        <td>${
+          produccion.aprobado_produccion === 1 ? "Aprobado" : "No aprobado"
+        }</td>
+        <td>${
+          produccion.FS_produccion
+            ? new Date(produccion.FS_produccion).toISOString().split("T")[0]
+            : "Sin Fecha"
+        }</td>
+
+        <td>
+          <div class="d-flex justify-content-center gap-1">
+            <button
+              onclick="actualizarProduccion(${produccion.id_produccion})"
+              type="button"
+              class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button
+              onclick="eliminarProduccion(${produccion.id_produccion})"
+              type="button"
+              class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded">
+              <i class="bi bi-trash3-fill"></i>
+            </button>
+          </div>
+        </td>
+      `;
+
+            tabla.querySelector("tbody").appendChild(fila);
+          });
+        } catch (err) {
+          console.error("Error al cargar las producciones:", err);
+        }
+      });
+
+      // Función para actualizar una producción (preparada para implementar)
+      function actualizarProduccion(idProduccion) {
+        console.log(`Actualizar producción con ID: ${idProduccion}`);
+        // Aquí puedes abrir un formulario o un modal para editar la producción
+      }
+
+      // Función para eliminar una producción
+      async function eliminarProduccion(idProduccion) {
+        const confirmacion = confirm(
+          `¿Estás seguro de que deseas eliminar la producción con ID ${idProduccion}?`
+        );
+
+        if (!confirmacion) return; // Si el usuario cancela, no hace nada
+
+        try {
+          // Llamar a la función expuesta en el preload
+          await window.electronAPI.eliminarProduccion(idProduccion);
+          console.log(`Producción con ID ${idProduccion} eliminada con éxito.`);
+
+          // Recargar la tabla para reflejar los cambios
+          alert("Producción eliminada con éxito.");
+          location.reload(); // Recarga la página para actualizar la lista
+        } catch (err) {
+          console.error("Error al eliminar la producción:", err);
+          alert(
+            "Error al eliminar la producción. Por favor, intenta de nuevo."
+          );
+        }
+      }
+    </script>
   </body>
 </html>

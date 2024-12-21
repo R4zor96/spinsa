@@ -54,7 +54,7 @@ CREATE TABLE produccion (
     id_pieza INT NOT NULL,
     folio_produccion VARCHAR(50) NOT NULL UNIQUE,
     cantidad_produccion INT NOT NULL,
-    estatus_produccion BOOLEAN NOT NULL,
+    estatus_produccion VARCHAR(20) NOT NULL,
     aprobado_produccion BOOLEAN DEFAULT FALSE,
     nombre_produccion VARCHAR(100) NOT NULL,
     descripcion_produccion TEXT,

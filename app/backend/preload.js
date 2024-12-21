@@ -29,4 +29,22 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para insertar pieza
   insertarPieza: (nombrePieza, descripcionPieza) =>
     ipcRenderer.invoke("insertar-pieza", { nombrePieza, descripcionPieza }),
+
+  // Función para obtener los registros de piezas
+  obtenerPiezas: () => ipcRenderer.invoke("obtener-piezas"),
+
+  //=============================================================================================================
+  //                                              FUNCIONES PRODUCCIONES
+  //=============================================================================================================
+  //Funcion para insertar producciones por su marca:
+  insertarProduccion: (produccionData) =>
+    ipcRenderer.invoke("insertar-produccion", produccionData),
+
+  //Funcion para obtener las producciones por su id_marca
+  obtenerProducciones: (idMarca) =>
+    ipcRenderer.invoke("obtener-producciones", idMarca),
+
+  // Función para eliminar una producción
+  eliminarProduccion: (idProduccion) =>
+    ipcRenderer.invoke("eliminar-produccion", idProduccion),
 });

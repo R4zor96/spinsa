@@ -27,5 +27,27 @@ async function insertarPieza(nombrePieza, descripcionPieza = null) {
     throw err; // Lanzar el error para manejarlo en otro lugar si es necesario
   }
 }
+/**
+ * Obtiene todos los registros de la tabla `pieza`, ordenados por `id_pieza`.
+ *
+ * @returns {Promise<Array>} - Lista de registros de la tabla `pieza`.
+ */
+async function obtenerPiezas() {
+  try {
+    const conn = await getConnection();
 
-module.exports = { insertarPieza };
+    // Consulta para obtener los registros
+    const query = `SELECT * FROM pieza ORDER BY id_pieza`;
+
+    // Ejecutar la consulta
+    const piezas = await conn.query(query);
+
+    console.log("Registros obtenidos de la tabla pieza:", piezas);
+    return piezas; // Devuelve los registros obtenidos
+  } catch (err) {
+    console.error("Error al obtener los registros de la tabla pieza:", err);
+    throw err;
+  }
+}
+
+module.exports = { insertarPieza, obtenerPiezas };
