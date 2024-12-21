@@ -23,6 +23,10 @@
       rel="stylesheet"
       href="../../../recursos/recursos-panel/css/style.css"
     />
+    <link
+      rel="stylesheet"
+      href="../../../recursos/recursos-panel/css/sidebars.css"
+    />
 
     <style>
       .bd-placeholder-img {
@@ -109,10 +113,6 @@
       href="../../../recursos/recursos-panel/css/checkout.css"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="../../../recursos/recursos-panel/css/sidebars.css"
-    />
     <script defer src="../../backend/renderer-empleado.js"></script>
   </head>
 
@@ -188,167 +188,55 @@
       </ul>
     </div>
     <div class="wrapper">
-      <aside id="sidebar">
-        <div class="d-flex">
-          <button class="toggle-btn" type="button">
-            <i class="bi bi-list"></i>
-          </button>
-          <div class="sidebar-logo">
-            <img src="../../../img/logo-blanco.png" width="50%" alt="" />
-          </div>
-        </div>
-        <ul class="sidebar-nav">
-          <li class="sidebar-item">
-            <a href="./dashboard-admin.html" class="sidebar-link">
-              <i class="bi bi-person-circle"></i>
-              <span id="perfil"></span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-miPerfil.html" class="sidebar-link">
-              <i class="bi bi-people"></i>
-              <span>Mi perfil</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-produccion.html" class="sidebar-link">
-              <i class="bi bi-gear"></i>
-              <span>Produccion</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-inventario.html" class="sidebar-link">
-              <i class="bi bi-box"></i>
-              <span>Inventario</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
-        </ul>
-        <div class="sidebar-footer">
-          <a
-            onclick="clearUserData();"
-            href="../index.html"
-            class="sidebar-link"
-          >
-            <i class="bi bi-box-arrow-in-left"></i>
-            <span>Cerrar sesión</span>
-          </a>
-        </div>
-      </aside>
-
       <div class="main p-3">
         <div class="text-center">
           <div class="container">
             <main>
               <div class="py-5 text-center">
-                <i class="bi bi-box custom-icon"></i>
-                <h2>INVENTARIO DE PIEZAS</h2>
-                <p class="lead">ingresar pieza</p>
+                <i class="bi bi-puzzle custom-icon"></i>
+                <h2>ACTUALIZAR PIEZA</h2>
+                <p class="lead">
+                  Modifique los siguientes campos para actualizar correctamente
+                  la pieza
+                </p>
+                <hr class="my-4" />
               </div>
-
-              <hr class="my-4" />
-
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <h4 class="mb-3">
-                    CREAR PIEZA <span id="tituloMarca"></span>
-                  </h4>
-                  <form class="needs-validation" novalidate>
+                  <form
+                    id="formActualizarPieza"
+                    class="needs-validation"
+                    novalidate
+                  >
                     <div class="row g-3">
-                      <div class="col-sm-4">
-                        <label for="firstName" class="form-label">Nombre</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="firstName"
-                          placeholder=""
-                          value=""
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere un nombre válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
-                        <label for="lastName" class="form-label"
-                          >Folio de envio</label
+                      <div class="col-sm-6">
+                        <label for="nombrePieza" class="form-label"
+                          >Nombre de la pieza</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="lastName"
-                          placeholder=""
+                          id="nombrePieza"
+                          placeholder="Nombre"
                           value=""
                           required
                         />
                         <div class="invalid-feedback">
-                          Se requiere un folio válido.
+                          Se requiere un nombre de la pieza válida.
                         </div>
                       </div>
 
-                      <div class="col-sm-4">
-                        <label for="fechaSalida" class="form-label"
-                          >Fecha salida</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="fechaSalida"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una fecha válida.
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <label for="descripcion" class="form-label"
+                      <div class="col-sm-6">
+                        <label for="descripcionPieza" class="form-label"
                           >Descripción</label
                         >
-                        <textarea
+                        <input
+                          type="text"
                           class="form-control"
-                          id="descripcion"
-                          rows="4"
-                          placeholder="Escribe una descripción aquí..."
-                          required
-                        ></textarea>
-                        <div class="invalid-feedback">
-                          Se requiere una descripción válida.
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Estatus Activo
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Aprobado
-                          </label>
-                        </div>
+                          id="descripcionPieza"
+                          placeholder="Opcional"
+                          value=""
+                        />
                       </div>
 
                       <hr class="my-4" />
@@ -357,9 +245,10 @@
                         class="w-100 btn btn-primary btn-lg"
                         type="submit"
                       >
-                        Ingresar usuario
+                        Guardar Cambios
                       </button>
                     </div>
+                    <br />
                   </form>
                 </div>
               </div>
@@ -368,10 +257,56 @@
         </div>
       </div>
     </div>
+    <input type="hidden" id="idPieza" value="" />
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
-    <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Escuchar el evento para cargar los datos de la pieza
+        window.electronAPI.onCargarPieza((pieza) => {
+          console.log(`Cargando datos de la pieza con ID: ${pieza.id_pieza}`);
+          document.getElementById("idPieza").value = pieza.id_pieza;
+          document.getElementById("nombrePieza").value = pieza.nombre_pieza;
+          document.getElementById("descripcionPieza").value =
+            pieza.descripcion_pieza || "";
+        });
+
+        window.electronAPI.onCargarPiezaError((error) => {
+          console.error(error);
+          alert(error);
+          window.location.href = "dashboard-admin.html"; // Redirige al dashboard principal
+        });
+
+        // Manejar el evento de guardar cambios
+        document
+          .getElementById("formActualizarPieza")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const idPieza = document.getElementById("idPieza").value;
+            const nombre = document.getElementById("nombrePieza").value;
+            const descripcion =
+              document.getElementById("descripcionPieza").value;
+
+            try {
+              const result = await window.electronAPI.actualizarPieza({
+                idPieza,
+                nombre,
+                descripcion,
+              });
+              if (result.success) {
+                alert(result.message);
+                window.location.href = "dashboard-admin.html"; // Redirige de nuevo al dashboard principal
+              } else {
+                alert(result.message);
+              }
+            } catch (err) {
+              console.error("Error al actualizar la pieza:", err);
+              alert("Hubo un error al actualizar la pieza.");
+            }
+          });
+      });
+    </script>
   </body>
 </html>

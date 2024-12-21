@@ -55,12 +55,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onCargarPiezaError: (callback) =>
     ipcRenderer.on("cargar-pieza-error", (_event, error) => callback(error)),
 
+  // Función para obtener las piezas que no están registradas en el inventario
+  obtenerPiezasSinInventario: (idMarca) =>
+    ipcRenderer.invoke("obtener-piezas-sin-inventario", idMarca),
+
   //=============================================================================================================
   //                                              FUNCIONES PRODUCCIONES
   //=============================================================================================================
   //Funcion para insertar producciones por su marca:
   insertarProduccion: (produccionData) =>
     ipcRenderer.invoke("insertar-produccion", produccionData),
+
+  //Funcion obtenewr todas las producciones
+  obtenerTodasLasProducciones: () =>
+    ipcRenderer.invoke("obtener-todas-las-producciones"),
 
   //Funcion para obtener las producciones por su id_marca
   obtenerProducciones: (idMarca) =>
@@ -91,7 +99,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ),
 
   //=============================================================================================================
-  //                                              FUNCIONES Usuarios
+  //                                              FUNCIONES USUARIOS
   //=============================================================================================================
   // Obtener información del usuario
   obtenerUsuarioPorId: (idUsuario) =>
@@ -100,4 +108,11 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Actualizar información del usuario
   actualizarUsuario: (idUsuario, datos) =>
     ipcRenderer.invoke("actualizar-usuario", { idUsuario, datos }),
+
+  //=============================================================================================================
+  //                                              FUNCIONES INVENTARIOS
+  //=============================================================================================================
+  // Función para insertar un nuevo inventario
+  insertarInventario: (inventarioData) =>
+    ipcRenderer.invoke("insertar-inventario", inventarioData),
 });

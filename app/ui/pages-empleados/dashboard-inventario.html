@@ -247,107 +247,79 @@
             <main>
               <div class="py-5 text-center">
                 <i class="bi bi-box custom-icon"></i>
-                <h2>INVENTARIO DE PIEZAS</h2>
-                <p class="lead">ingresar pieza</p>
+                <h2 id="tituloMarca"></h2>
+                <p class="lead">Registro de inventario</p>
               </div>
 
               <hr class="my-4" />
 
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <h4 class="mb-3">
-                    CREAR PIEZA <span id="tituloMarca"></span>
-                  </h4>
-                  <form class="needs-validation" novalidate>
+                  <form id="formInventario" class="needs-validation" novalidate>
                     <div class="row g-3">
-                      <div class="col-sm-4">
-                        <label for="firstName" class="form-label">Nombre</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="firstName"
-                          placeholder=""
-                          value=""
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere un nombre válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
-                        <label for="lastName" class="form-label"
-                          >Folio de envio</label
+                      <h4 class="mb-1">Información de la pieza</h4>
+                      <div class="col-sm-6">
+                        <label for="buscadorPiezas" class="form-label"
+                          >Buscador de piezas:</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="lastName"
+                          id="buscadorPiezas"
+                          placeholder="Nombre de la pieza..."
+                        />
+                      </div>
+
+                      <div class="col-sm-6">
+                        <label for="piezaSeleccionada" class="form-label"
+                          >Selecciona la Pieza:</label
+                        >
+
+                        <select
+                          id="piezaSeleccionada"
+                          name="piezaSeleccionada"
+                          class="form-select"
+                          required
+                        >
+                          <!-- Las opciones se generarán dinámicamente -->
+                        </select>
+                      </div>
+
+                      <hr class="my-4" />
+
+                      <h4 class="mb-1">Información del inventario</h4>
+
+                      <div class="col-sm-4">
+                        <label for="cantidadInventario" class="form-label"
+                          >Cantidad</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="cantidadInventario"
                           placeholder=""
                           value=""
                           required
                         />
                         <div class="invalid-feedback">
-                          Se requiere un folio válido.
+                          Se requiere una cantidad válida.
                         </div>
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="fechaSalida" class="form-label"
-                          >Fecha salida</label
+                        <label for="fechaUltimoMovimiento" class="form-label"
+                          >Fecha de último movimiento</label
                         >
                         <input
                           type="date"
                           class="form-control"
-                          id="fechaSalida"
+                          id="fechaUltimoMovimiento"
+                          placeholder=""
+                          value=""
                           required
                         />
                         <div class="invalid-feedback">
                           Se requiere una fecha válida.
-                        </div>
-                      </div>
-
-                      <div class="col-12">
-                        <label for="descripcion" class="form-label"
-                          >Descripción</label
-                        >
-                        <textarea
-                          class="form-control"
-                          id="descripcion"
-                          rows="4"
-                          placeholder="Escribe una descripción aquí..."
-                          required
-                        ></textarea>
-                        <div class="invalid-feedback">
-                          Se requiere una descripción válida.
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Estatus Activo
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="estatus"
-                            value="activo"
-                          />
-                          <label class="form-check-label" for="estatus">
-                            Aprobado
-                          </label>
                         </div>
                       </div>
 
@@ -357,10 +329,12 @@
                         class="w-100 btn btn-primary btn-lg"
                         type="submit"
                       >
-                        Ingresar usuario
+                        Registrar Inventario
                       </button>
                     </div>
                   </form>
+                  <br />
+                  <div id="mensaje"></div>
                 </div>
               </div>
             </main>
@@ -368,10 +342,121 @@
         </div>
       </div>
     </div>
+    <input type="hidden" id="idMarca" value="" />
+
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const selectPiezas = document.getElementById("piezaSeleccionada");
+        const buscadorPiezas = document.getElementById("buscadorPiezas");
+        const idMarcaInput = document.getElementById("idMarca");
+
+        if (!idMarcaInput) {
+          console.error(
+            "El campo oculto 'idMarca' no está presente en el DOM."
+          );
+          document.getElementById("mensaje").textContent =
+            "Error: No se pudo cargar el ID de la marca.";
+          return;
+        }
+
+        try {
+          // Obtener los datos del usuario desde el JSON
+          const userData = await window.electronAPI.readUserData();
+
+          if (!userData || !userData.id_marca) {
+            console.error(
+              "No se pudo obtener el ID de la marca del archivo JSON."
+            );
+            document.getElementById("mensaje").textContent =
+              "Error: No se pudo obtener el ID de la marca.";
+            return;
+          }
+
+          // Asignar el idMarca al campo oculto
+          idMarcaInput.value = userData.id_marca;
+
+          // Llamar a la función para obtener las piezas sin inventario
+          const piezas = await window.electronAPI.obtenerPiezasSinInventario(
+            userData.id_marca
+          );
+
+          if (!piezas || piezas.length === 0) {
+            console.error("No hay piezas disponibles para esta marca.");
+            document.getElementById("mensaje").textContent =
+              "No hay piezas disponibles para registrar en el inventario.";
+            return;
+          }
+
+          // Llenar el desplegable con las piezas
+          piezas.forEach((pieza) => {
+            const option = document.createElement("option");
+            option.value = pieza.id_pieza; // El ID de la pieza será el valor
+            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
+            selectPiezas.appendChild(option);
+          });
+
+          // Agregar evento al buscador para filtrar las opciones
+          buscadorPiezas.addEventListener("input", () => {
+            const filtro = buscadorPiezas.value.toLowerCase();
+            const opciones = selectPiezas.options;
+
+            // Mostrar/ocultar opciones según el filtro
+            for (let i = 0; i < opciones.length; i++) {
+              const texto = opciones[i].textContent.toLowerCase();
+              opciones[i].style.display = texto.includes(filtro)
+                ? "block"
+                : "none";
+            }
+          });
+        } catch (err) {
+          console.error("Error al cargar los datos del inventario:", err);
+          document.getElementById("mensaje").textContent =
+            "Hubo un error al cargar los datos. Intenta nuevamente.";
+        }
+
+        // Manejar el evento de registrar inventario
+        document
+          .getElementById("formInventario")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const idMarca = idMarcaInput.value;
+            const idPieza = document.getElementById("piezaSeleccionada").value;
+            const cantidadInventario =
+              document.getElementById("cantidadInventario").value;
+            const fechaUltimoMovimiento = document.getElementById(
+              "fechaUltimoMovimiento"
+            ).value;
+
+            const inventarioData = {
+              idMarca,
+              idPieza,
+              cantidadInventario,
+              fechaUltimoMovimiento,
+            };
+
+            try {
+              const inventarioId = await window.electronAPI.insertarInventario(
+                inventarioData
+              );
+              document.getElementById("mensaje").textContent =
+                "Inventario registrado con éxito.";
+              setTimeout(() => {
+                location.reload(); // Recargar la página después de 2 segundos
+              }, 2000);
+            } catch (error) {
+              console.error("Error al registrar el inventario:", error);
+              document.getElementById("mensaje").textContent =
+                "Error al registrar el inventario. Por favor, intenta de nuevo.";
+            }
+          });
+      });
+    </script>
   </body>
 </html>

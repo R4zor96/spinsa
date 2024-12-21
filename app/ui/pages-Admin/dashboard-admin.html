@@ -209,11 +209,11 @@
           <li class="sidebar-item">
             <a href="./dashboard-admin.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">AUDI</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a href="./dashboard-usuarios.html" class="sidebar-link">
+            <a href="./dashboard-miPerfil.html" class="sidebar-link">
               <i class="bi bi-people"></i>
               <span>Mi perfil</span>
             </a>
@@ -296,158 +296,42 @@
                 height="380"
               ></canvas>
 
-              <h2>USUARIOS</h2>
-              <div class="table-responsive small">
-                <table class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Correo</th>
-                      <th scope="col">Estatus</th>
-                      <th scope="col">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Jose Gabriel</td>
-                      <td>josetrujillo@spinsa.com.mx</td>
-                      <td>
-                        <a
-                          href="#"
-                          type="button"
-                          class="btn btn-outline-success btn-md d-block m-2 shadow-sm rounded"
-                        >
-                          <i class="bi bi-arrow-repeat"></i> Habilitar
-                        </a>
-                      </td>
-                      <td>
-                        <div
-                          class="d-flex flex-column align-items-center gap-2"
-                        >
-                          <button
-                            onclick="actualizarUsuario()"
-                            type="button"
-                            class="btn btn-warning btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-pencil-square text-white"></i>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-trash3-fill"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
               <h2>PRODUCCIÓN</h2>
               <div class="table-responsive small">
-                <table class="table table-striped table-sm">
+                <table
+                  id="tablaProducciones"
+                  class="table table-striped table-sm"
+                >
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Pieza</th>
-                      <th scope="col">Marca</th>
-                      <th scope="col">Cantidad</th>
-                      <th scope="col">Fecha Salida</th>
-                      <th scope="col">Aprobación</th>
                       <th scope="col">Folio</th>
+                      <th scope="col">Nombre de Pieza</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Cantidad</th>
                       <th scope="col">Estatus</th>
+                      <th scope="col">Aprobación</th>
+                      <th scope="col">Fecha Salida</th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1,001</td>
-                      <td>random</td>
-                      <td>data</td>
-                      <td>placeholder</td>
-                      <td>text</td>
-                      <td>text</td>
-                      <td>text</td>
-                      <td>
-                        <a
-                          href="#"
-                          type="button"
-                          class="btn btn-outline-success btn-md d-block m-2 shadow-sm rounded"
-                        >
-                          <i class="bi bi-arrow-repeat"></i> Habilitar
-                        </a>
-                      </td>
-                      <td>
-                        <div
-                          class="d-flex flex-column align-items-center gap-2"
-                        >
-                          <button
-                            onclick="actualizarProduccion()"
-                            type="button"
-                            class="btn btn-warning btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-pencil-square text-white"></i>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-trash3-fill"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Las filas se generarán dinámicamente aquí -->
                   </tbody>
                 </table>
               </div>
               <h2>PIEZAS</h2>
               <div class="table-responsive small">
-                <table class="table table-striped table-sm">
+                <table id="tablaPiezas" class="table table-striped table-sm">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Pieza</th>
+                      <th scope="col">Nombre</th>
                       <th scope="col">descripcion</th>
-                      <th scope="col">Estatus</th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>random</td>
-                      <td>data</td>
-                      <td>
-                        <a
-                          href="#"
-                          type="button"
-                          class="btn btn-outline-success btn-md d-block m-2 shadow-sm rounded"
-                        >
-                          <i class="bi bi-arrow-repeat"></i> Habilitar
-                        </a>
-                      </td>
-                      <td>
-                        <div
-                          class="d-flex flex-column align-items-center gap-2"
-                        >
-                          <button
-                            onclick="actualizarPieza()"
-                            type="button"
-                            class="btn btn-warning btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-pencil-square text-white"></i>
-                          </button>
-                          <button
-                            type="button"
-                            class="btn btn-danger btn-md shadow-sm rounded"
-                          >
-                            <i class="bi bi-trash3-fill"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <!-- Las filas se generarán dinámicamente aquí -->
                   </tbody>
                 </table>
               </div>
@@ -457,32 +341,200 @@
       </div>
     </div>
 
+    <div id="obtenerMarca"></div>
+
     <script src="../../../../node_modules/chart.js/dist/chart.umd.js"></script>
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos-panel/js/dashboard.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
-      function actualizarUsuario() {
-        window.open(
-          "./dashboard-actualizar-usuario.html",
-          "Actualizar usuario", // Nombre de la ventana
-          "width=800,height=600" // Propiedades de la ventana
+      //===============================================================================================================
+      //                                            FUNCIONES PIEZAS
+      //===============================================================================================================
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const piezas = await window.electronAPI.obtenerPiezas();
+
+          const tabla = document.getElementById("tablaPiezas");
+
+          if (!tabla) {
+            console.error("La tabla con ID 'tablaPiezas' no se encontró.");
+            return;
+          }
+
+          piezas.forEach((pieza) => {
+            const fila = document.createElement("tr");
+
+            fila.innerHTML = `
+              <td>${pieza.id_pieza}</td>
+              <td>${pieza.nombre_pieza}</td>
+              <td>${pieza.descripcion_pieza}</td>
+              <td>
+                <div class="d-flex justify-content-center gap-1">
+                  <button
+                    onclick="actualizarPieza(${pieza.id_pieza})"
+                    type="button"
+                    class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button
+                    onclick="eliminarPieza(${pieza.id_pieza})"
+                    type="button"
+                    class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded">
+                    <i class="bi bi-trash3-fill"></i>
+                  </button>
+                </div>
+              </td>
+            `;
+
+            tabla.querySelector("tbody").appendChild(fila);
+          });
+        } catch (err) {
+          console.error("Error al cargar los registros de piezas:", err);
+        }
+      });
+
+      function actualizarPieza(idPieza) {
+        console.log(
+          `Redirigiendo al dashboard para actualizar pieza con ID: ${idPieza}`
         );
+        window.electronAPI.redirigirActualizarPieza(idPieza);
       }
-      function actualizarProduccion() {
-        window.open(
-          "./dashboard-actualizar-produccion.html",
-          "Actualizar produccion", // Nombre de la ventana
-          "width=800,height=600" // Propiedades de la ventana
+
+      // Función para eliminar una pieza
+      async function eliminarPieza(idPieza) {
+        const confirmacion = confirm(
+          `¿Estás seguro de que deseas eliminar la pieza con ID ${idPieza}?`
         );
+
+        if (!confirmacion) return; // Si el usuario cancela, no hace nada
+
+        try {
+          // Llamar a la función expuesta en el preload
+          await window.electronAPI.eliminarPieza(idPieza);
+          console.log(`Pieza con ID ${idPieza} eliminada con éxito.`);
+
+          // Recargar la tabla para reflejar los cambios
+          alert("Pieza eliminada con éxito.");
+          location.reload(); // Recarga la página para actualizar la lista
+        } catch (err) {
+          console.error("Error al eliminar la pieza:", err);
+          alert("Error al eliminar la pieza. Por favor, intenta de nuevo.");
+        }
       }
-      function actualizarPieza() {
-        window.open(
-          "./dashboard-actualizar-pieza.html",
-          "Actualizar pieza", // Nombre de la ventana
-          "width=800,height=600" // Propiedades de la ventana
+
+      //===============================================================================================================
+      //                                            FUNCIONES PRODUCCIONES
+      //===============================================================================================================
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          console.log("Cargando todas las producciones...");
+
+          // Llamar a la función para obtener todas las producciones
+          const producciones =
+            await window.electronAPI.obtenerTodasLasProducciones();
+
+          // Obtener la referencia de la tabla
+          const tabla = document.getElementById("tablaProducciones");
+
+          if (!tabla) {
+            console.error(
+              "La tabla con ID 'tablaProducciones' no se encontró."
+            );
+            return;
+          }
+
+          // Iterar sobre las producciones y agregarlas a la tabla
+          for (const produccion of producciones) {
+            const fila = document.createElement("tr");
+
+            // Obtener el nombre de la pieza mediante su ID
+            let nombrePieza = "Pieza no encontrada";
+            try {
+              const pieza = await window.electronAPI.obtenerPiezaPorId(
+                produccion.id_pieza
+              );
+              if (pieza && pieza.nombre_pieza) {
+                nombrePieza = pieza.nombre_pieza;
+              }
+            } catch (error) {
+              console.error(
+                `Error al obtener el nombre de la pieza con ID ${produccion.id_pieza}:`,
+                error
+              );
+            }
+
+            // Generar la fila
+            fila.innerHTML = `
+        <td>${produccion.folio_produccion}</td>
+        <td>${nombrePieza}</td>
+        <td>${produccion.nombre_produccion}</td>
+        <td>${produccion.cantidad_produccion}</td>
+        <td>${produccion.estatus_produccion}</td>
+        <td>${
+          produccion.aprobado_produccion === 1 ? "Aprobado" : "No aprobado"
+        }</td>
+        <td>${
+          produccion.FS_produccion
+            ? new Date(produccion.FS_produccion).toISOString().split("T")[0]
+            : "Sin Fecha"
+        }</td>
+        <td>
+          <div class="d-flex justify-content-center gap-1">
+            <button
+              onclick="actualizarProduccion(${produccion.id_produccion})"
+              type="button"
+              class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button
+              onclick="eliminarProduccion(${produccion.id_produccion})"
+              type="button"
+              class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded">
+              <i class="bi bi-trash3-fill"></i>
+            </button>
+          </div>
+        </td>
+      `;
+
+            tabla.querySelector("tbody").appendChild(fila);
+          }
+        } catch (err) {
+          console.error("Error al cargar las producciones:", err);
+        }
+      });
+
+      // Función para actualizar una producción (preparada para implementar)
+      function actualizarProduccion(idProduccion) {
+        console.log(
+          `Redirigiendo al dashboard para actualizar la producción con ID: ${idProduccion}`
         );
+        window.electronAPI.redirigirActualizarProduccion(idProduccion);
+      }
+
+      // Función para eliminar una producción
+      async function eliminarProduccion(idProduccion) {
+        const confirmacion = confirm(
+          `¿Estás seguro de que deseas eliminar la producción con ID ${idProduccion}?`
+        );
+
+        if (!confirmacion) return; // Si el usuario cancela, no hace nada
+
+        try {
+          // Llamar a la función expuesta en el preload
+          await window.electronAPI.eliminarProduccion(idProduccion);
+          console.log(`Producción con ID ${idProduccion} eliminada con éxito.`);
+
+          // Recargar la tabla para reflejar los cambios
+          alert("Producción eliminada con éxito.");
+          location.reload(); // Recarga la página para actualizar la lista
+        } catch (err) {
+          console.error("Error al eliminar la producción:", err);
+          alert(
+            "Error al eliminar la producción. Por favor, intenta de nuevo."
+          );
+        }
       }
     </script>
   </body>

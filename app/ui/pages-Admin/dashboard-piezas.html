@@ -113,7 +113,7 @@
       rel="stylesheet"
       href="../../../recursos/recursos-panel/css/sidebars.css"
     />
-    <script defer src="../../backend/renderer-admin.js"></script>
+    <script defer src="../../backend/renderer-empleado.js"></script>
   </head>
 
   <body>
@@ -201,31 +201,31 @@
           <li class="sidebar-item">
             <a href="./dashboard-admin.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">Admin</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a href="./dashboard-usuarios.html" class="sidebar-link">
+            <a href="./dashboard-miPerfil.html" class="sidebar-link">
               <i class="bi bi-people"></i>
-              <span>Usuarios</span>
+              <span>Mi perfil</span>
             </a>
           </li>
           <li class="sidebar-item">
             <a href="./dashboard-produccion.html" class="sidebar-link">
-              <i class="bi bi-car-front"></i>
-              <span>Produccion - Marcas</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
               <i class="bi bi-gear"></i>
-              <span>Piezas - Marcas</span>
+              <span>Produccion</span>
             </a>
           </li>
           <li class="sidebar-item">
             <a href="./dashboard-inventario.html" class="sidebar-link">
               <i class="bi bi-box"></i>
-              <span>inventario - Marcas</span>
+              <span>Inventario</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="./dashboard-piezas.html" class="sidebar-link">
+              <i class="bi bi-puzzle"></i>
+              <span>Piezas</span>
             </a>
           </li>
         </ul>
@@ -256,17 +256,17 @@
               </div>
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <form class="needs-validation" novalidate>
+                  <form id="formPieza" class="needs-validation" novalidate>
                     <div class="row g-3">
                       <div class="col-sm-6">
-                        <label for="firstName" class="form-label"
+                        <label for="nombrePieza" class="form-label"
                           >Nombre de la pieza</label
                         >
                         <input
                           type="text"
                           class="form-control"
                           id="nombrePieza"
-                          placeholder=""
+                          placeholder="Nombre"
                           value=""
                           required
                         />
@@ -276,134 +276,16 @@
                       </div>
 
                       <div class="col-sm-6">
-                        <label for="lastName" class="form-label"
-                          >Folio de envio</label
+                        <label for="descripcionPieza" class="form-label"
+                          >Descripción</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="lastName"
-                          placeholder=""
+                          id="descripcionPieza"
+                          placeholder="Opcional"
                           value=""
-                          required
                         />
-                        <div class="invalid-feedback">
-                          Se requiere un folio válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-6">
-                        <label for="fechaSalida" class="form-label"
-                          >Fecha entrada</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="fechaEntrada"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una fecha de entrada válida.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-6">
-                        <label for="fechaSalida" class="form-label"
-                          >Fecha salida</label
-                        >
-                        <input
-                          type="date"
-                          class="form-control"
-                          id="fechaSalida"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una fecha de salida válida.
-                        </div>
-                      </div>
-
-                      <div class="col-10">
-                        <label for="Observaciones" class="form-label"
-                          >Observaciones</label
-                        >
-                        <textarea
-                          class="form-control"
-                          id="Observaciones"
-                          rows="4"
-                          placeholder="Escribe las observaciones aquí..."
-                          required
-                        ></textarea>
-                        <div class="invalid-feedback">
-                          Se requiere una observación válida.
-                        </div>
-                      </div>
-                      <div class="col-2">
-                        <div class="container">
-                          <div
-                            class="d-flex flex-column align-items-start gap-2"
-                          >
-                            <div>marca las casillas</div>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="estatusActivo"
-                                value="activo"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="estatusActivo"
-                              >
-                                Estatus
-                              </label>
-                            </div>
-                            <div class="form-check">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                id="estatusAprobado"
-                                value="aprobado"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="estatusAprobado"
-                              >
-                                Aprobado
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-md-2">
-                        <label for="marca" class="form-label">Marca</label>
-                        <select class="form-select" id="marca" required>
-                          <option value="">selecciona...</option>
-                          <option>Volkswagen</option>
-                          <option>Penta nova</option>
-                          <option>Audi</option>
-                          <option>Tesla</option>
-                        </select>
-                        <div class="invalid-feedback">
-                          se requeire una selección válida.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-2">
-                        <label for="cantidadStock" class="form-label"
-                          >Stock</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="cantidadStock"
-                          placeholder="cantidad"
-                          min="0"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una cantidad de stock válida.
-                        </div>
                       </div>
 
                       <hr class="my-4" />
@@ -412,9 +294,11 @@
                         class="w-100 btn btn-primary btn-lg"
                         type="submit"
                       >
-                        Ingresar usuario
+                        Registrar pieza
                       </button>
                     </div>
+                    <br />
+                    <div id="mensaje"></div>
                   </form>
                 </div>
               </div>
@@ -428,5 +312,31 @@
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      //Insertar piezas
+      document
+        .getElementById("formPieza")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const nombrePieza = document.getElementById("nombrePieza").value;
+          const descripcionPieza =
+            document.getElementById("descripcionPieza").value;
+
+          try {
+            // Llamar a la función expuesta en el preload
+            const piezaId = await window.electronAPI.insertarPieza(
+              nombrePieza,
+              descripcionPieza
+            );
+            document.getElementById(
+              "mensaje"
+            ).textContent = `Pieza guardada con éxito.`;
+          } catch (error) {
+            document.getElementById("mensaje").textContent =
+              "Error al guardar la pieza. Por favor, intenta de nuevo.";
+          }
+        });
+    </script>
   </body>
 </html>

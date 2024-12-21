@@ -119,10 +119,34 @@ async function actualizarPieza(idPieza, nombre, descripcion) {
   }
 }
 
+/**
+ * Obtiene las piezas que no están registradas en el inventario para una marca específica.
+ *
+ * @param {number} idMarca - ID de la marca para filtrar las piezas.
+ * @returns {Promise<Array>} - Lista de piezas sin inventario.
+ */
+async function obtenerPiezasSinInventario(idMarca) {
+  try {
+    const conn = await getConnection();
+    const query = `
+      SELECT p.id_pieza, p.nombre_pieza
+      FROM pieza p
+      LEFT JOIN inventario i ON p.id_pieza = i.id_pieza AND i.id_marca = ?
+      WHERE i.id_pieza IS NULL;
+    `;
+    const piezas = await conn.query(query, [idMarca]);
+    return piezas;
+  } catch (err) {
+    console.error("Error al obtener piezas sin inventario:", err);
+    throw err;
+  }
+}
+
 module.exports = {
   insertarPieza,
   obtenerPiezas,
   obtenerPiezaPorId,
   eliminarPieza,
   actualizarPieza,
+  obtenerPiezasSinInventario,
 };

@@ -19,6 +19,14 @@
       rel="stylesheet"
       href="../../../../node_modules/bootstrap-icons/font/bootstrap-icons.css"
     />
+    <link
+      rel="stylesheet"
+      href="../../../recursos/recursos-panel/css/style.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../../recursos/recursos-panel/css/sidebars.css"
+    />
 
     <style>
       .bd-placeholder-img {
@@ -105,10 +113,6 @@
       href="../../../recursos/recursos-panel/css/checkout.css"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="../../../recursos/recursos-panel/css/sidebars.css"
-    />
     <script defer src="../../backend/renderer-empleado.js"></script>
   </head>
 
@@ -184,90 +188,51 @@
       </ul>
     </div>
     <div class="wrapper">
-      <aside id="sidebar">
-        <div class="d-flex">
-          <button class="toggle-btn" type="button">
-            <i class="bi bi-list"></i>
-          </button>
-          <div class="sidebar-logo">
-            <img src="../../../img/logo-blanco.png" width="50%" alt="" />
-          </div>
-        </div>
-        <ul class="sidebar-nav">
-          <li class="sidebar-item">
-            <a href="./dashboard.html" class="sidebar-link">
-              <i class="bi bi-person-circle"></i>
-              <span id="perfil"></span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-miPerfil.html" class="sidebar-link">
-              <i class="bi bi-people"></i>
-              <span>Mi perfil</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-produccion.html" class="sidebar-link">
-              <i class="bi bi-gear"></i>
-              <span>Produccion</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-inventario.html" class="sidebar-link">
-              <i class="bi bi-box"></i>
-              <span>Inventario</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
-        </ul>
-        <div class="sidebar-footer">
-          <a
-            onclick="clearUserData();"
-            href="../index.html"
-            class="sidebar-link"
-          >
-            <i class="bi bi-box-arrow-in-left"></i>
-            <span>Cerrar sesión</span>
-          </a>
-        </div>
-      </aside>
-
       <div class="main p-3">
         <div class="text-center">
           <div class="container">
             <main>
               <div class="py-5 text-center">
-                <img
-                  class="d-block mx-auto mb-4"
-                  src="../../../img/logo-morado.png"
-                  alt=""
-                />
+                <i class="bi bi-gear custom-icon"></i>
+                <h2 id="tituloMarca"></h2>
+                <p class="lead">Registro de produccion</p>
               </div>
 
               <hr class="my-4" />
 
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <h4 class="mb-3">MI PERFIL</h4>
                   <form
-                    id="formActualizarUsuario"
+                    id="formActualizarProduccion"
                     class="needs-validation"
                     novalidate
                   >
                     <div class="row g-3">
                       <div class="col-sm-4">
-                        <label for="nombreUsuario" class="form-label"
-                          >Nombre</label
+                        <label for="folioProduccion" class="form-label"
+                          >Folio</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="nombreUsuario"
+                          id="folioProduccion"
+                          placeholder=""
+                          value=""
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Se requiere un folio válido.
+                        </div>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="nombreProduccion" class="form-label"
+                          >Nombre de produccion</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="nombreProduccion"
                           placeholder=""
                           value=""
                           required
@@ -278,93 +243,90 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="apUsuario" class="form-label"
-                          >Apellido Paterno</label
+                        <label for="cantidadProduccion" class="form-label"
+                          >Cantidad</label
                         >
                         <input
-                          type="text"
+                          type="number"
                           class="form-control"
-                          id="apUsuario"
-                          placeholder=""
-                          value=""
+                          id="cantidadProduccion"
                           required
                         />
                         <div class="invalid-feedback">
-                          Se requiere un apellido paterno válido.
+                          Se requiere una cantidad válida.
                         </div>
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="amUsuario" class="form-label"
-                          >Apellido Materno</label
+                        <label for="estatusProduccion" class="form-label"
+                          >Estatus</label
+                        >
+                        <select
+                          id="estatusProduccion"
+                          name="estatusProduccion"
+                          class="form-select"
+                          required
+                        >
+                          <option value="En Proceso">En Proceso</option>
+                          <option value="Finalizado">Finalizado</option>
+                          <option value="Cancelado">Cancelado</option>
+                        </select>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="aprobadoProduccion" class="form-label"
+                          >Aprobado:</label
+                        >
+                        <select
+                          id="aprobadoProduccion"
+                          class="form-select"
+                          name="aprobadoProduccion"
+                          required
+                        >
+                          <option value="0">No aprobado</option>
+                          <option value="1">Aprobado</option>
+                        </select>
+                      </div>
+
+                      <div class="col-sm-4">
+                        <label for="FSProduccion" class="form-label"
+                          >Fecha de salida</label
                         >
                         <input
-                          type="text"
+                          type="date"
                           class="form-control"
-                          id="amUsuario"
-                          placeholder=""
-                          value=""
+                          id="FSProduccion"
                           required
                         />
                         <div class="invalid-feedback">
-                          se requiere un apellido materno válido.
+                          Se requiere una fecha válida.
                         </div>
                       </div>
 
-                      <div class="col-6">
-                        <label for="correoUsuario" class="form-label"
-                          >Correo Electrónico</label
+                      <div class="col-12">
+                        <label for="descripcionProduccion" class="form-label"
+                          >Descripción</label
                         >
-                        <input
-                          type="email"
+                        <textarea
                           class="form-control"
-                          id="correoUsuario"
-                          placeholder="tucorreo@spinsa.com.mx"
-                        />
-                        <div class="invalid-feedback">
-                          se requere un correo válido.
-                        </div>
+                          id="descripcionProduccion"
+                          rows="3"
+                          placeholder="Escribe una descripción aquí..."
+                        ></textarea>
                       </div>
 
-                      <div class="col-6">
-                        <label for="contrasenaUsuario" class="form-label"
-                          >Contraseña</label
-                        >
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="contrasenaUsuario"
-                          placeholder="Ingresa tu contraseña"
-                        />
-                        <div class="form-text">
-                          Deja vacio para mantener la misma.
-                        </div>
-                      </div>
-                    </div>
+                      <hr class="my-4" />
 
-                    <hr class="my-4" />
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-6">
-                          <button
-                            class="w-100 btn btn-primary btn-lg"
-                            type="submit"
-                          >
-                            Actualizar datos
-                          </button>
-                        </div>
-                        <div class="col-6">
-                          <button
-                            class="w-100 btn btn-danger btn-lg"
-                            type="submit"
-                          >
-                            Cancelar
-                          </button>
-                        </div>
-                      </div>
+                      <button
+                        class="w-100 btn btn-primary btn-lg"
+                        type="submit"
+                      >
+                        Guardar Cambios
+                      </button>
                     </div>
                   </form>
-                  <div id="mensaje" class="mt-3"></div>
+                  <br />
+                  <div id="mensaje"></div>
                 </div>
               </div>
             </main>
@@ -372,91 +334,86 @@
         </div>
       </div>
     </div>
-
-    <div id="obtenerUsuario"></div>
-
+    <!-- Campo oculto para almacenar el ID de la producción -->
+    <input type="hidden" id="idProduccion" value="" />
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
-    <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        try {
-          const obtenerIdUsuario = () => {
-            const idUsuarioInput = document.getElementById("idUsuario");
-            return idUsuarioInput ? idUsuarioInput.value : null;
-          };
-
-          let idUsuario = obtenerIdUsuario();
-          while (!idUsuario) {
-            await new Promise((resolve) => setTimeout(resolve, 100)); // Esperar 100ms
-            idUsuario = obtenerIdUsuario();
-          }
-
-          console.log("ID del usuario obtenida del campo oculto:", idUsuario);
-
-          const usuario = await window.electronAPI.obtenerUsuarioPorId(
-            idUsuario
+      document.addEventListener("DOMContentLoaded", () => {
+        // Escuchar el evento para cargar los datos de la producción
+        window.electronAPI.onCargarProduccion((produccion) => {
+          console.log(
+            `Cargando datos de la producción con ID: ${produccion.id_produccion}`
           );
+          document.getElementById("idProduccion").value =
+            produccion.id_produccion;
+          document.getElementById("folioProduccion").value =
+            produccion.folio_produccion;
+          document.getElementById("nombreProduccion").value =
+            produccion.nombre_produccion;
+          document.getElementById("cantidadProduccion").value =
+            produccion.cantidad_produccion;
+          document.getElementById("estatusProduccion").value =
+            produccion.estatus_produccion;
+          document.getElementById("aprobadoProduccion").value =
+            produccion.aprobado_produccion;
+          document.getElementById("descripcionProduccion").value =
+            produccion.descripcion_produccion || "";
+          // Validar y asignar la fecha en formato YYYY-MM-DD
+          const fechaElem = document.getElementById("FSProduccion");
+          if (fechaElem) {
+            const fsProduccion = produccion.FS_produccion
+              ? new Date(produccion.FS_produccion).toISOString().split("T")[0]
+              : "";
+            fechaElem.value = fsProduccion;
+          }
+        });
 
-          // Llenar los campos del formulario con los datos del usuario
-          document.getElementById("idUsuario").value = usuario.id_usuario;
-          document.getElementById("nombreUsuario").value =
-            usuario.nombre_usuario;
-          document.getElementById("apUsuario").value = usuario.ap_usuario;
-          document.getElementById("amUsuario").value = usuario.am_usuario;
-          document.getElementById("correoUsuario").value =
-            usuario.correo_usuario;
-        } catch (err) {
-          console.error("Error al cargar los datos del usuario:", err);
-          alert("Hubo un error al cargar los datos del usuario.");
-        }
+        window.electronAPI.onCargarProduccionError((error) => {
+          console.error(error);
+          alert(error);
+          window.location.href = "dashboard-producciones.html"; // Redirige al dashboard principal
+        });
 
+        // Manejar el evento de guardar cambios
         document
-          .getElementById("formActualizarUsuario")
+          .getElementById("formActualizarProduccion")
           .addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const idUsuario = document.getElementById("idUsuario").value;
-            const contrasenaUsuario = document
-              .getElementById("contrasenaUsuario")
-              .value.trim();
-
+            const idProduccion = document.getElementById("idProduccion").value;
             const datos = {
-              nombre_usuario: document
-                .getElementById("nombreUsuario")
-                .value.trim(),
-              ap_usuario: document.getElementById("apUsuario").value.trim(),
-              am_usuario: document.getElementById("amUsuario").value.trim(),
-              correo_usuario: document
-                .getElementById("correoUsuario")
-                .value.trim(),
+              folio_produccion:
+                document.getElementById("folioProduccion").value,
+              nombre_produccion:
+                document.getElementById("nombreProduccion").value,
+              cantidad_produccion:
+                document.getElementById("cantidadProduccion").value,
+              estatus_produccion:
+                document.getElementById("estatusProduccion").value,
+              aprobado_produccion:
+                document.getElementById("aprobadoProduccion").value,
+              descripcion_produccion: document.getElementById(
+                "descripcionProduccion"
+              ).value,
+              FS_produccion: document.getElementById("FSProduccion").value,
             };
 
-            // Solo agregar contrasena_usuario si se proporciona
-            if (contrasenaUsuario) {
-              datos.contrasena_usuario = contrasenaUsuario;
-            }
-
             try {
-              const result = await window.electronAPI.actualizarUsuario(
-                idUsuario,
-                datos
-              );
-              const mensajeElem = document.getElementById("mensaje");
-              mensajeElem.textContent = result.message;
-              mensajeElem.className = result.success
-                ? "text-success"
-                : "text-danger";
-
+              const result = await window.electronAPI.actualizarProduccion({
+                idProduccion,
+                datos,
+              });
               if (result.success) {
-                setTimeout(() => {
-                  location.reload();
-                }, 2000);
+                alert(result.message);
+                window.location.href = "dashboard-admin.html"; // Redirige al dashboard principal
+              } else {
+                alert(result.message);
               }
             } catch (err) {
-              console.error("Error al actualizar el usuario:", err);
-              alert("Hubo un error al actualizar los datos.");
+              console.error("Error al actualizar la producción:", err);
+              alert("Hubo un error al actualizar la producción.");
             }
           });
       });

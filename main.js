@@ -33,13 +33,6 @@ function readUserData() {
   }
 }
 
-function sendUserData() {
-  const userData = readUserData();
-  if (userData && mainWindow) {
-    mainWindow.webContents.send("user-data", userData);
-  }
-}
-
 // Función para eliminar el archivo JSON
 function clearUserData() {
   try {
@@ -155,6 +148,7 @@ const {
   obtenerPiezaPorId,
   eliminarPieza,
   actualizarPieza,
+  obtenerPiezasSinInventario,
 } = require("./app/models/Tabla_piezas.js");
 
 // Manejador para insertar pieza
@@ -215,10 +209,24 @@ ipcMain.handle("eliminar-pieza", async (event, idPieza) => {
 // Manejador para redirigir al dashboard de actualización
 ipcMain.handle("redirigir-actualizar-pieza", async (event, idPieza) => {
   try {
-    // Cargar el archivo HTML del dashboard de actualización
-    mainWindow.loadFile(
-      "src/app/ui/pages-empleados/dashboard-actualizar-pieza.html"
-    );
+    // Leer los datos del usuario desde el archivo JSON
+    const userData = readUserData();
+    if (!userData || !userData.id_rol) {
+      throw new Error("No se encontró la información del usuario o el id_rol.");
+    }
+
+    const { id_rol } = userData;
+
+    // Redirigir según el id_rol
+    if (id_rol === 128) {
+      mainWindow.loadFile(
+        "src/app/ui/pages-admin/dashboard-actualizar-pieza.html"
+      );
+    } else {
+      mainWindow.loadFile(
+        "src/app/ui/pages-empleados/dashboard-actualizar-pieza.html"
+      );
+    }
 
     // Pasar el ID de la pieza seleccionada al dashboard
     mainWindow.webContents.once("did-finish-load", async () => {
@@ -251,6 +259,17 @@ ipcMain.handle(
     }
   }
 );
+
+// Manejador para obtener piezas sin inventario
+ipcMain.handle("obtener-piezas-sin-inventario", async (event, idMarca) => {
+  try {
+    const piezas = await obtenerPiezasSinInventario(idMarca);
+    return piezas; // Devuelve las piezas que no tienen inventario
+  } catch (err) {
+    console.error("Error al obtener piezas sin inventario:", err);
+    throw err; // Lanza el error para manejarlo en el renderer
+  }
+});
 
 //=============================================================================================================
 //                                              FUNCIONES PRODUCCIONES
@@ -303,6 +322,19 @@ ipcMain.handle("obtener-producciones", async (event, idMarca) => {
   }
 });
 
+//Manejador para obtener todas las producciones
+ipcMain.handle("obtener-todas-las-producciones", async () => {
+  try {
+    const conn = await getConnection();
+    const query = "SELECT * FROM produccion";
+    const producciones = await conn.query(query);
+    return producciones;
+  } catch (err) {
+    console.error("Error al obtener todas las producciones:", err);
+    throw err;
+  }
+});
+
 // Manejador para eliminar una producción
 ipcMain.handle("eliminar-produccion", async (event, idProduccion) => {
   try {
@@ -322,10 +354,29 @@ ipcMain.handle(
   "redirigir-actualizar-produccion",
   async (event, idProduccion) => {
     try {
-      mainWindow.loadFile(
-        "src/app/ui/pages-empleados/dashboard-actualizar-produccion.html"
-      );
+      // Leer los datos del usuario desde el archivo JSON
+      const userData = readUserData();
+      if (!userData || !userData.id_rol) {
+        throw new Error(
+          "No se encontró la información del usuario o el id_rol."
+        );
+      }
 
+      const { id_rol } = userData;
+
+      // Redirigir según el id_rol
+      if (id_rol === 128) {
+        mainWindow.loadFile(
+          "src/app/ui/pages-admin/dashboard-actualizar-produccion.html"
+        );
+      } else {
+        mainWindow.loadFile(
+          "src/app/ui/pages-empleados/dashboard-actualizar-produccion.html"
+        );
+      }
+      //("src/app/ui/pages-empleados/dashboard-actualizar-pieza.html");
+
+      // Cargar los datos de la producción seleccionada
       mainWindow.webContents.once("did-finish-load", async () => {
         const produccion = await obtenerProduccionPorId(idProduccion);
         if (produccion) {
@@ -362,7 +413,7 @@ ipcMain.handle(
 );
 
 //=============================================================================================================
-//                                              FUNCIONES PRODUCCIONES
+//                                              FUNCIONES USUARIOS
 //=============================================================================================================
 const {
   obtenerUsuarioPorId,
@@ -382,7 +433,13 @@ ipcMain.handle("obtener-usuario-por-id", async (event, idUsuario) => {
 // Actualizar usuario
 ipcMain.handle("actualizar-usuario", async (event, { idUsuario, datos }) => {
   try {
+    // Excluir contraseña si no se proporciona
+    if (!datos.contrasena_usuario || datos.contrasena_usuario.trim() === "") {
+      delete datos.contrasena_usuario;
+    }
+
     const actualizado = await actualizarUsuario(idUsuario, datos);
+
     if (actualizado) {
       return { success: true, message: "Datos actualizados correctamente." };
     } else {
@@ -393,6 +450,38 @@ ipcMain.handle("actualizar-usuario", async (event, { idUsuario, datos }) => {
     throw err;
   }
 });
+
+//=============================================================================================================
+//                                              FUNCIONES INVENTARIOS
+//=============================================================================================================
+const { insertarInventario } = require("./app/models/Tabla_inventarios.js");
+
+// Manejador para insertar inventario
+ipcMain.handle(
+  "insertar-inventario",
+  async (
+    event,
+    { idMarca, idPieza, cantidadInventario, fechaUltimoMovimiento }
+  ) => {
+    try {
+      const inventarioId = await insertarInventario(
+        idMarca,
+        idPieza,
+        cantidadInventario,
+        fechaUltimoMovimiento
+      );
+      console.log("Inventario registrado con ID:", inventarioId);
+      return {
+        success: true,
+        message: "Inventario registrado con éxito.",
+        id: inventarioId,
+      };
+    } catch (err) {
+      console.error("Error al registrar el inventario:", err);
+      return { success: false, message: "Error al registrar el inventario." };
+    }
+  }
+);
 
 //=============================================================================================================
 //                                              Tupu

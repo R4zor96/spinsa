@@ -109,7 +109,7 @@
       rel="stylesheet"
       href="../../../recursos/recursos-panel/css/sidebars.css"
     />
-    <script defer src="../../backend/renderer-admin.js"></script>
+    <script defer src="../../backend/renderer-empleado.js"></script>
   </head>
 
   <body>
@@ -197,31 +197,31 @@
           <li class="sidebar-item">
             <a href="./dashboard-admin.html" class="sidebar-link">
               <i class="bi bi-person-circle"></i>
-              <span id="perfil">Admin</span>
+              <span id="perfil"></span>
             </a>
           </li>
           <li class="sidebar-item">
-            <a href="./dashboard-usuarios.html" class="sidebar-link">
+            <a href="./dashboard-miPerfil.html" class="sidebar-link">
               <i class="bi bi-people"></i>
-              <span>Usuarios</span>
+              <span>Mi perfil</span>
             </a>
           </li>
           <li class="sidebar-item">
             <a href="./dashboard-produccion.html" class="sidebar-link">
-              <i class="bi bi-car-front"></i>
-              <span>Produccion - Marcas</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
               <i class="bi bi-gear"></i>
-              <span>Piezas - Marcas</span>
+              <span>Produccion</span>
             </a>
           </li>
           <li class="sidebar-item">
             <a href="./dashboard-inventario.html" class="sidebar-link">
               <i class="bi bi-box"></i>
-              <span>inventario - Marcas</span>
+              <span>Inventario</span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="./dashboard-piezas.html" class="sidebar-link">
+              <i class="bi bi-puzzle"></i>
+              <span>Piezas</span>
             </a>
           </li>
         </ul>
@@ -247,25 +247,27 @@
                   src="../../../img/logo-morado.png"
                   alt=""
                 />
-                <p class="lead">
-                  ¿Deseas integrar un nuevo miembro al equipo spinsa? llena los
-                  siguientes campos
-                </p>
               </div>
 
               <hr class="my-4" />
 
               <div class="row g-5">
                 <div class="col-md-12 col-lg-12">
-                  <h4 class="mb-3">CREAR UN NUEVO USUARIO</h4>
-                  <form class="needs-validation" novalidate>
+                  <h4 class="mb-3">MI PERFIL</h4>
+                  <form
+                    id="formActualizarUsuario"
+                    class="needs-validation"
+                    novalidate
+                  >
                     <div class="row g-3">
                       <div class="col-sm-4">
-                        <label for="Nombre" class="form-label">Nombre</label>
+                        <label for="nombreUsuario" class="form-label"
+                          >Nombre</label
+                        >
                         <input
                           type="text"
                           class="form-control"
-                          id="Nombre"
+                          id="nombreUsuario"
                           placeholder=""
                           value=""
                           required
@@ -276,13 +278,13 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="AP" class="form-label"
+                        <label for="apUsuario" class="form-label"
                           >Apellido Paterno</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="AP"
+                          id="apUsuario"
                           placeholder=""
                           value=""
                           required
@@ -293,13 +295,13 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="AM" class="form-label"
+                        <label for="amUsuario" class="form-label"
                           >Apellido Materno</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="AM"
+                          id="amUsuario"
                           placeholder=""
                           value=""
                           required
@@ -309,14 +311,14 @@
                         </div>
                       </div>
 
-                      <div class="col-4">
-                        <label for="email" class="form-label"
+                      <div class="col-6">
+                        <label for="correoUsuario" class="form-label"
                           >Correo Electrónico</label
                         >
                         <input
                           type="email"
                           class="form-control"
-                          id="email"
+                          id="correoUsuario"
                           placeholder="tucorreo@spinsa.com.mx"
                         />
                         <div class="invalid-feedback">
@@ -324,94 +326,45 @@
                         </div>
                       </div>
 
-                      <div class="col-4">
-                        <label for="password" class="form-label"
+                      <div class="col-6">
+                        <label for="contrasenaUsuario" class="form-label"
                           >Contraseña</label
                         >
                         <input
                           type="password"
                           class="form-control"
-                          id="password"
+                          id="contrasenaUsuario"
                           placeholder="Ingresa tu contraseña"
-                          required
                         />
-                        <div class="invalid-feedback">
-                          La contraseña es obligatoria.
-                        </div>
-                      </div>
-
-                      <div class="col-4">
-                        <label for="password" class="form-label"
-                          >Confirmar contraseña</label
-                        >
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="confirmarPassword"
-                          placeholder="Confirma tu contraseña"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Confirmar la contraseña es obligatorio.
-                        </div>
-                      </div>
-
-                      <div class="col-3">
-                        <label for="username" class="form-label"
-                          >Nombre de Usuario</label
-                        >
-                        <div class="input-group has-validation">
-                          <span class="input-group-text">@</span>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="username"
-                            placeholder="Username"
-                            required
-                          />
-                          <div class="invalid-feedback">
-                            tu nombre de usuario es requerido.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-3">
-                        <label for="telefono" class="form-label"
-                          >Numero de teléfono</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="numeroTelefono"
-                          placeholder="222 312 0965"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          tu numero de teléfono es requerido.
-                        </div>
-                      </div>
-
-                      <div class="col-md-6">
-                        <label for="marca" class="form-label">Marca</label>
-                        <select class="form-select" id="marca" required>
-                          <option value="">selecciona...</option>
-                          <option>Volkswagen</option>
-                          <option>Penta nova</option>
-                          <option>Audi</option>
-                          <option>Tesla</option>
-                        </select>
-                        <div class="invalid-feedback">
-                          se requeire una selección válida.
+                        <div class="form-text">
+                          Deja vacio para mantener la misma.
                         </div>
                       </div>
                     </div>
 
                     <hr class="my-4" />
-
-                    <button class="w-100 btn btn-primary btn-lg" type="submit">
-                      Ingresar usuario
-                    </button>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-6">
+                          <button
+                            class="w-100 btn btn-primary btn-lg"
+                            type="submit"
+                          >
+                            Actualizar datos
+                          </button>
+                        </div>
+                        <div class="col-6">
+                          <button
+                            class="w-100 btn btn-danger btn-lg"
+                            type="submit"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </form>
+                  <div id="mensaje" class="mt-3"></div>
                 </div>
               </div>
             </main>
@@ -419,10 +372,94 @@
         </div>
       </div>
     </div>
-    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <div id="obtenerUsuario"></div>
+
+    <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const obtenerIdUsuario = () => {
+            const idUsuarioInput = document.getElementById("idUsuario");
+            return idUsuarioInput ? idUsuarioInput.value : null;
+          };
+
+          let idUsuario = obtenerIdUsuario();
+          while (!idUsuario) {
+            await new Promise((resolve) => setTimeout(resolve, 100)); // Esperar 100ms
+            idUsuario = obtenerIdUsuario();
+          }
+
+          console.log("ID del usuario obtenida del campo oculto:", idUsuario);
+
+          const usuario = await window.electronAPI.obtenerUsuarioPorId(
+            idUsuario
+          );
+
+          // Llenar los campos del formulario con los datos del usuario
+          document.getElementById("idUsuario").value = usuario.id_usuario;
+          document.getElementById("nombreUsuario").value =
+            usuario.nombre_usuario;
+          document.getElementById("apUsuario").value = usuario.ap_usuario;
+          document.getElementById("amUsuario").value = usuario.am_usuario;
+          document.getElementById("correoUsuario").value =
+            usuario.correo_usuario;
+        } catch (err) {
+          console.error("Error al cargar los datos del usuario:", err);
+          alert("Hubo un error al cargar los datos del usuario.");
+        }
+
+        document
+          .getElementById("formActualizarUsuario")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const idUsuario = document.getElementById("idUsuario").value;
+            const contrasenaUsuario = document
+              .getElementById("contrasenaUsuario")
+              .value.trim();
+
+            const datos = {
+              nombre_usuario: document
+                .getElementById("nombreUsuario")
+                .value.trim(),
+              ap_usuario: document.getElementById("apUsuario").value.trim(),
+              am_usuario: document.getElementById("amUsuario").value.trim(),
+              correo_usuario: document
+                .getElementById("correoUsuario")
+                .value.trim(),
+            };
+
+            // Solo agregar contrasena_usuario si se proporciona
+            if (contrasenaUsuario) {
+              datos.contrasena_usuario = contrasenaUsuario;
+            }
+
+            try {
+              const result = await window.electronAPI.actualizarUsuario(
+                idUsuario,
+                datos
+              );
+              const mensajeElem = document.getElementById("mensaje");
+              mensajeElem.textContent = result.message;
+              mensajeElem.className = result.success
+                ? "text-success"
+                : "text-danger";
+
+              if (result.success) {
+                setTimeout(() => {
+                  location.reload();
+                }, 2000);
+              }
+            } catch (err) {
+              console.error("Error al actualizar el usuario:", err);
+              alert("Hubo un error al actualizar los datos.");
+            }
+          });
+      });
+    </script>
   </body>
 </html>
