@@ -110,8 +110,79 @@ async function eliminarProduccion(idProduccion) {
   }
 }
 
+/**
+ * Actualiza los datos de una producción en la base de datos.
+ *
+ * @param {number} idProduccion - ID de la producción a actualizar.
+ * @param {Object} datos - Datos de la producción a actualizar.
+ * @returns {Promise<void>} - Indica que la actualización se realizó correctamente.
+ */
+async function actualizarProduccion(idProduccion, datos) {
+  try {
+    const conn = await getConnection();
+
+    const query = `
+      UPDATE produccion
+      SET folio_produccion = ?, 
+          nombre_produccion = ?, 
+          cantidad_produccion = ?, 
+          estatus_produccion = ?, 
+          aprobado_produccion = ?, 
+          descripcion_produccion = ?, 
+          FS_produccion = ?
+      WHERE id_produccion = ?
+    `;
+
+    const valores = [
+      datos.folio_produccion,
+      datos.nombre_produccion,
+      datos.cantidad_produccion,
+      datos.estatus_produccion,
+      datos.aprobado_produccion,
+      datos.descripcion_produccion,
+      datos.FS_produccion,
+      idProduccion,
+    ];
+
+    await conn.query(query, valores);
+
+    console.log(`Producción con ID ${idProduccion} actualizada con éxito.`);
+  } catch (err) {
+    console.error("Error al actualizar la producción:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene una producción de la base de datos por su ID.
+ *
+ * @param {number} idProduccion - ID de la producción a buscar.
+ * @returns {Promise<Object|null>} - Devuelve la producción encontrada o `null` si no existe.
+ */
+async function obtenerProduccionPorId(idProduccion) {
+  try {
+    const conn = await getConnection();
+
+    const query = "SELECT * FROM produccion WHERE id_produccion = ?";
+    const [produccion] = await conn.query(query, [idProduccion]);
+
+    if (produccion) {
+      console.log("Producción encontrada:", produccion);
+      return produccion; // Devuelve la producción encontrada
+    } else {
+      console.warn(`No se encontró ninguna producción con ID ${idProduccion}.`);
+      return null; // Si no se encuentra, devuelve null
+    }
+  } catch (err) {
+    console.error("Error al obtener la producción por ID:", err);
+    throw err; // Lanza el error para manejarlo en otro lugar
+  }
+}
+
 module.exports = {
   obtenerProduccionesPorMarca,
   insertarProduccion,
   eliminarProduccion,
+  actualizarProduccion,
+  obtenerProduccionPorId,
 };

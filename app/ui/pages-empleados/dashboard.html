@@ -306,6 +306,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Folio</th>
+                      <th scope="col">Nombre de Pieza</th>
                       <th scope="col">Nombre</th>
                       <th scope="col">Cantidad</th>
                       <th scope="col">Estatus</th>
@@ -394,6 +395,36 @@
           console.error("Error al cargar los registros de piezas:", err);
         }
       });
+
+      function actualizarPieza(idPieza) {
+        console.log(
+          `Redirigiendo al dashboard para actualizar pieza con ID: ${idPieza}`
+        );
+        window.electronAPI.redirigirActualizarPieza(idPieza);
+      }
+
+      // Función para eliminar una pieza
+      async function eliminarPieza(idPieza) {
+        const confirmacion = confirm(
+          `¿Estás seguro de que deseas eliminar la pieza con ID ${idPieza}?`
+        );
+
+        if (!confirmacion) return; // Si el usuario cancela, no hace nada
+
+        try {
+          // Llamar a la función expuesta en el preload
+          await window.electronAPI.eliminarPieza(idPieza);
+          console.log(`Pieza con ID ${idPieza} eliminada con éxito.`);
+
+          // Recargar la tabla para reflejar los cambios
+          alert("Pieza eliminada con éxito.");
+          location.reload(); // Recarga la página para actualizar la lista
+        } catch (err) {
+          console.error("Error al eliminar la pieza:", err);
+          alert("Error al eliminar la pieza. Por favor, intenta de nuevo.");
+        }
+      }
+
       //===============================================================================================================
       //                                            FUNCIONES PRODUCCIONES
       //===============================================================================================================
@@ -436,11 +467,29 @@
           }
 
           // Iterar sobre las producciones y agregarlas a la tabla
-          producciones.forEach((produccion) => {
+          for (const produccion of producciones) {
             const fila = document.createElement("tr");
 
+            // Obtener el nombre de la pieza mediante su ID
+            let nombrePieza = "Pieza no encontrada";
+            try {
+              const pieza = await window.electronAPI.obtenerPiezaPorId(
+                produccion.id_pieza
+              );
+              if (pieza && pieza.nombre_pieza) {
+                nombrePieza = pieza.nombre_pieza;
+              }
+            } catch (error) {
+              console.error(
+                `Error al obtener el nombre de la pieza con ID ${produccion.id_pieza}:`,
+                error
+              );
+            }
+
+            // Generar la fila
             fila.innerHTML = `
         <td>${produccion.folio_produccion}</td>
+        <td>${nombrePieza}</td>
         <td>${produccion.nombre_produccion}</td>
         <td>${produccion.cantidad_produccion}</td>
         <td>${produccion.estatus_produccion}</td>
@@ -452,7 +501,6 @@
             ? new Date(produccion.FS_produccion).toISOString().split("T")[0]
             : "Sin Fecha"
         }</td>
-
         <td>
           <div class="d-flex justify-content-center gap-1">
             <button
@@ -472,7 +520,7 @@
       `;
 
             tabla.querySelector("tbody").appendChild(fila);
-          });
+          }
         } catch (err) {
           console.error("Error al cargar las producciones:", err);
         }
@@ -480,8 +528,10 @@
 
       // Función para actualizar una producción (preparada para implementar)
       function actualizarProduccion(idProduccion) {
-        console.log(`Actualizar producción con ID: ${idProduccion}`);
-        // Aquí puedes abrir un formulario o un modal para editar la producción
+        console.log(
+          `Redirigiendo al dashboard para actualizar la producción con ID: ${idProduccion}`
+        );
+        window.electronAPI.redirigirActualizarProduccion(idProduccion);
       }
 
       // Función para eliminar una producción

@@ -152,6 +152,9 @@ ipcMain.on("request-user-data", (event) => {
 const {
   insertarPieza,
   obtenerPiezas,
+  obtenerPiezaPorId,
+  eliminarPieza,
+  actualizarPieza,
 } = require("./app/models/Tabla_piezas.js");
 
 // Manejador para insertar pieza
@@ -186,6 +189,69 @@ ipcMain.handle("obtener-piezas", async () => {
     throw err; // Lanza el error para manejarlo en el renderer
   }
 });
+
+// Manejador para obtener una pieza por su ID
+ipcMain.handle("obtener-pieza-por-id", async (event, idPieza) => {
+  try {
+    const pieza = await obtenerPiezaPorId(idPieza);
+    return pieza;
+  } catch (err) {
+    console.error(`Error al obtener la pieza con ID ${idPieza}:`, err);
+    throw err;
+  }
+});
+
+// Manejador para eliminar una pieza
+ipcMain.handle("eliminar-pieza", async (event, idPieza) => {
+  try {
+    await eliminarPieza(idPieza);
+    console.log(`Pieza con ID ${idPieza} eliminada.`);
+  } catch (err) {
+    console.error(`Error al eliminar la pieza con ID ${idPieza}:`, err);
+    throw err; // Lanza el error para manejarlo en el renderer
+  }
+});
+
+// Manejador para redirigir al dashboard de actualización
+ipcMain.handle("redirigir-actualizar-pieza", async (event, idPieza) => {
+  try {
+    // Cargar el archivo HTML del dashboard de actualización
+    mainWindow.loadFile(
+      "src/app/ui/pages-empleados/dashboard-actualizar-pieza.html"
+    );
+
+    // Pasar el ID de la pieza seleccionada al dashboard
+    mainWindow.webContents.once("did-finish-load", async () => {
+      const pieza = await obtenerPiezaPorId(idPieza);
+      if (pieza) {
+        mainWindow.webContents.send("cargar-pieza", pieza);
+      } else {
+        mainWindow.webContents.send(
+          "cargar-pieza-error",
+          `No se encontró la pieza con ID ${idPieza}`
+        );
+      }
+    });
+  } catch (err) {
+    console.error("Error al redirigir al dashboard de actualización:", err);
+  }
+});
+
+// Manejador para actualizar una pieza
+ipcMain.handle(
+  "actualizar-pieza",
+  async (event, { idPieza, nombre, descripcion }) => {
+    try {
+      await actualizarPieza(idPieza, nombre, descripcion);
+      console.log(`Pieza con ID ${idPieza} actualizada con éxito.`);
+      return { success: true, message: "Pieza actualizada con éxito." };
+    } catch (err) {
+      console.error(`Error al actualizar la pieza con ID ${idPieza}:`, err);
+      return { success: false, message: "Error al actualizar la pieza." };
+    }
+  }
+);
+
 //=============================================================================================================
 //                                              FUNCIONES PRODUCCIONES
 //=============================================================================================================
@@ -193,6 +259,8 @@ const {
   obtenerProduccionesPorMarca,
   insertarProduccion,
   eliminarProduccion,
+  actualizarProduccion,
+  obtenerProduccionPorId,
 } = require("./app/models/Tabla_producciones.js");
 
 // Manejador para insertar una nueva producción
@@ -248,6 +316,51 @@ ipcMain.handle("eliminar-produccion", async (event, idProduccion) => {
     throw err; // Lanza el error para manejarlo en el renderer
   }
 });
+
+// Manejador para redirigir al dashboard de actualización
+ipcMain.handle(
+  "redirigir-actualizar-produccion",
+  async (event, idProduccion) => {
+    try {
+      mainWindow.loadFile(
+        "src/app/ui/pages-empleados/dashboard-actualizar-produccion.html"
+      );
+
+      mainWindow.webContents.once("did-finish-load", async () => {
+        const produccion = await obtenerProduccionPorId(idProduccion);
+        if (produccion) {
+          mainWindow.webContents.send("cargar-produccion", produccion);
+        } else {
+          mainWindow.webContents.send(
+            "cargar-produccion-error",
+            `No se encontró la producción con ID ${idProduccion}`
+          );
+        }
+      });
+    } catch (err) {
+      console.error("Error al redirigir al dashboard de actualización:", err);
+    }
+  }
+);
+
+// Manejador para actualizar una producción
+ipcMain.handle(
+  "actualizar-produccion",
+  async (event, { idProduccion, datos }) => {
+    try {
+      await actualizarProduccion(idProduccion, datos);
+      console.log(`Producción con ID ${idProduccion} actualizada con éxito.`);
+      return { success: true, message: "Producción actualizada con éxito." };
+    } catch (err) {
+      console.error(
+        `Error al actualizar la producción con ID ${idProduccion}:`,
+        err
+      );
+      return { success: false, message: "Error al actualizar la producción." };
+    }
+  }
+);
+
 //=============================================================================================================
 //                                              Tupu
 //=============================================================================================================

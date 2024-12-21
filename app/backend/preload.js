@@ -33,6 +33,28 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para obtener los registros de piezas
   obtenerPiezas: () => ipcRenderer.invoke("obtener-piezas"),
 
+  // Función para obtener una pieza por su ID
+  obtenerPiezaPorId: (idPieza) =>
+    ipcRenderer.invoke("obtener-pieza-por-id", idPieza),
+
+  // Función para eliminar una pieza
+  eliminarPieza: (idPieza) => ipcRenderer.invoke("eliminar-pieza", idPieza),
+
+  // Redirigir al dashboard de actualización
+  redirigirActualizarPieza: (idPieza) =>
+    ipcRenderer.invoke("redirigir-actualizar-pieza", idPieza),
+
+  // Actualizar una pieza
+  actualizarPieza: (data) => ipcRenderer.invoke("actualizar-pieza", data),
+
+  // Recibir datos de la pieza seleccionada
+  onCargarPieza: (callback) =>
+    ipcRenderer.on("cargar-pieza", (_event, pieza) => callback(pieza)),
+
+  // Manejar errores al cargar la pieza
+  onCargarPiezaError: (callback) =>
+    ipcRenderer.on("cargar-pieza-error", (_event, error) => callback(error)),
+
   //=============================================================================================================
   //                                              FUNCIONES PRODUCCIONES
   //=============================================================================================================
@@ -47,4 +69,24 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para eliminar una producción
   eliminarProduccion: (idProduccion) =>
     ipcRenderer.invoke("eliminar-produccion", idProduccion),
+
+  // Redirigir al dashboard de actualización
+  redirigirActualizarProduccion: (idProduccion) =>
+    ipcRenderer.invoke("redirigir-actualizar-produccion", idProduccion),
+
+  // Actualizar una producción
+  actualizarProduccion: (data) =>
+    ipcRenderer.invoke("actualizar-produccion", data),
+
+  // Recibir datos de la producción seleccionada
+  onCargarProduccion: (callback) =>
+    ipcRenderer.on("cargar-produccion", (_event, produccion) =>
+      callback(produccion)
+    ),
+
+  // Manejar errores al cargar la producción
+  onCargarProduccionError: (callback) =>
+    ipcRenderer.on("cargar-produccion-error", (_event, error) =>
+      callback(error)
+    ),
 });
