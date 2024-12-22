@@ -6,29 +6,29 @@ console.log("Renderer cargado correctamente");
 function displayUserData() {
   window.electronAPI.readUserData().then((userData) => {
     if (userData) {
-      console.log("Datos del usuario leídos desde el JSON:", userData);
+      console.log("Datos del usuario leídos desde el JSON:", userData[0]);
 
       // Asignar el valor de la Marca
       const obtenerMarca = document.getElementById("obtenerMarca");
       if (obtenerMarca) {
-        obtenerMarca.innerHTML = `<input type="hidden" id="idMarca" value="${userData.id_marca}">`;
+        obtenerMarca.innerHTML = `<input type="hidden" id="idMarca" value="${userData[0].id_marca}">`;
       }
 
       // Asignar el valor del usuario
       const obtenerUsuario = document.getElementById("obtenerUsuario");
       if (obtenerUsuario) {
-        obtenerUsuario.innerHTML = `<input type="hidden" id="idUsuario" value="${userData.id_usuario}">`;
+        obtenerUsuario.innerHTML = `<input type="hidden" id="idUsuario" value="${userData[0].id_usuario}">`;
       }
 
       // Mostrar el mensaje de bienvenida
       const welcomeMessage = document.getElementById("welcomeMessage");
       if (welcomeMessage) {
-        welcomeMessage.textContent = `BIENVENIDO ${userData.nombre_usuario.toUpperCase()}`;
+        welcomeMessage.textContent = `BIENVENIDO ${userData[0].nombre_usuario.toUpperCase()}`;
       }
 
       // Mostrar la marca
       const tituloMarca = document.getElementById("tituloMarca");
-      id_marca = userData.id_marca;
+      id_marca = userData[0].id_marca;
       if (tituloMarca && id_marca) {
         switch (id_marca) {
           case 1:
@@ -51,22 +51,22 @@ function displayUserData() {
       //Mostrar nombre en el perfil
       const perfil = document.getElementById("perfil");
       if (perfil) {
-        perfil.innerHTML = `Empleado: ${userData.nombre_usuario}`;
+        perfil.innerHTML = `Empleado: ${userData[0].nombre_usuario}`;
       }
 
       //Mostrar nombre en el perfil
       const perfil2 = document.getElementById("perfil2");
       if (perfil2) {
-        perfil2.innerHTML = `Admin: ${userData.nombre_usuario}`;
+        perfil2.innerHTML = `Admin: ${userData[0].nombre_usuario}`;
       }
       //=========EJEMPLO=====================================
       // Mostrar otros datos si es necesario
       const userInfo = document.getElementById("userInfo");
       if (userInfo) {
         userInfo.innerHTML = `
-          <p><strong>Nombre:</strong> ${userData.nombre_usuario}</p>
-          <p><strong>Email:</strong> ${userData.correo_usuario}</p>
-          <p><strong>Rol:</strong> ${userData.id_rol}</p>
+          <p><strong>Nombre:</strong> ${userData[0].nombre_usuario}</p>
+          <p><strong>Email:</strong> ${userData[0].correo_usuario}</p>
+          <p><strong>Rol:</strong> ${userData[0].id_rol}</p>
         `;
       }
       //======================================================
