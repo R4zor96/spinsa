@@ -328,16 +328,20 @@ ipcMain.handle("obtener-producciones", async (event, idMarca) => {
   }
 });
 
-//Manejador para obtener todas las producciones
+// Manejador para obtener todas las producciones
 ipcMain.handle("obtener-todas-las-producciones", async () => {
   try {
-    const conn = await getConnection();
+    const conn = await getConnection(); // Obtén la conexión desde mysql2/promise
     const query = "SELECT * FROM produccion";
-    const producciones = await conn.query(query);
-    return producciones;
+
+    // Ejecuta la consulta y desestructura los resultados
+    const [producciones] = await conn.query(query);
+
+    console.log("Producciones obtenidas:", producciones); // Depuración
+    return producciones; // Retorna los datos obtenidos
   } catch (err) {
     console.error("Error al obtener todas las producciones:", err);
-    throw err;
+    throw err; // Lanza el error para manejarlo en el frontend si es necesario
   }
 });
 
