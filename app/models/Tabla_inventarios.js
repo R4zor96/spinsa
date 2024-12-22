@@ -21,7 +21,7 @@ async function insertarInventario(
       INSERT INTO inventario (id_marca, id_pieza, cantidad_inventario, fecha_ultimo_movimiento) 
       VALUES (?, ?, ?, ?)
     `;
-    const result = await conn.query(query, [
+    const [result] = await conn.execute(query, [
       idMarca,
       idPieza,
       cantidadInventario,
@@ -48,7 +48,7 @@ async function obtenerInventariosPorMarca(idMarca) {
       WHERE id_marca = ?
       ORDER BY id_inventario ASC
     `;
-    const inventarios = await conn.query(query, [idMarca]);
+    const [inventarios] = await conn.execute(query, [idMarca]);
     return inventarios;
   } catch (err) {
     console.error("Error al obtener los inventarios por marca:", err);
@@ -66,7 +66,7 @@ async function eliminarInventario(idInventario) {
   try {
     const conn = await getConnection();
     const query = "DELETE FROM inventario WHERE id_inventario = ?";
-    await conn.query(query, [idInventario]);
+    await conn.execute(query, [idInventario]);
     console.log(`Inventario con ID ${idInventario} eliminado con éxito.`);
   } catch (err) {
     console.error("Error al eliminar el inventario:", err);
@@ -74,57 +74,57 @@ async function eliminarInventario(idInventario) {
   }
 }
 
-//Obtener inventario por ID
+/**
+ * Obtiene un inventario por su ID.
+ *
+ * @param {number} idInventario - ID del inventario a buscar.
+ * @returns {Promise<Object|null>} - Detalles del inventario o null si no existe.
+ */
 async function obtenerInventarioPorId(idInventario) {
   try {
     const conn = await getConnection();
     const query = "SELECT * FROM inventario WHERE id_inventario = ?";
-    const [inventario] = await conn.query(query, [idInventario]);
-    return inventario || null;
+    const [inventario] = await conn.execute(query, [idInventario]);
+    return inventario[0] || null;
   } catch (err) {
     console.error("Error al obtener el inventario por ID:", err);
     throw err;
   }
 }
 
-// Actualizar inventario
+/**
+ * Actualiza un inventario en la base de datos.
+ *
+ * @param {number} idInventario - ID del inventario a actualizar.
+ * @param {Object} datos - Datos a actualizar.
+ * @returns {Promise<void>} - Indica que la actualización se realizó correctamente.
+ */
 async function actualizarInventario(idInventario, datos) {
   try {
-    console.log("Datos para actualizar en la base de datos:", datos);
-
     const conn = await getConnection();
 
-    // 1. Verificar si existe ese inventario.
-    //    Esto evita el problema de affectedRows = 0 cuando en realidad no se encontró nada.
-    const [existe] = await conn.query(
+    const [existe] = await conn.execute(
       "SELECT COUNT(*) AS total FROM inventario WHERE id_inventario = ?",
       [idInventario]
     );
 
-    if (!existe || !existe.total) {
+    if (!existe[0].total) {
       console.warn(`No se encontró ningún inventario con ID ${idInventario}`);
-      // Lanzamos un error para que lo capture el bloque catch en main.js
       throw new Error(`No existe un inventario con el ID ${idInventario}.`);
     }
 
-    // 2. Realizar el UPDATE, aunque los datos sean los mismos.
     const query = `
       UPDATE inventario
       SET cantidad_inventario = ?, fecha_ultimo_movimiento = ?
       WHERE id_inventario = ?
     `;
-    const result = await conn.query(query, [
+    await conn.execute(query, [
       datos.cantidad_inventario,
       datos.fecha_ultimo_movimiento,
       idInventario,
     ]);
 
-    console.log("Resultado de la consulta SQL:", result);
-
-    // 3. Como el inventario sí existía, consideramos la operación exitosa:
     console.log(`Inventario con ID ${idInventario} actualizado correctamente.`);
-
-    // (Ya no lanzamos error si affectedRows = 0, pues puede ser que la info sea igual)
   } catch (err) {
     console.error("Error al actualizar el inventario:", err);
     throw err;
@@ -146,7 +146,7 @@ async function obtenerTodosLosInventarios() {
       JOIN pieza p ON i.id_pieza = p.id_pieza
       ORDER BY i.id_inventario ASC
     `;
-    const inventarios = await conn.query(query);
+    const [inventarios] = await conn.execute(query);
     return inventarios;
   } catch (err) {
     console.error("Error al obtener todos los inventarios:", err);

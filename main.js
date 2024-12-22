@@ -47,6 +47,33 @@ function clearUserData() {
   }
 }
 
+//=============================================================================================================
+//                                              Manejadores JSON
+//=============================================================================================================
+
+// Manejador para leer los datos del JSON
+ipcMain.handle("read-user-data", async () => {
+  return readUserData();
+});
+
+// Manejador para guardar datos en el JSON
+ipcMain.handle("save-user-data", async (event, data) => {
+  saveUserData(data);
+});
+
+// Manejador para eliminar el JSON
+ipcMain.handle("clear-user-data", async () => {
+  clearUserData();
+});
+
+// Manejador para enviar datos al renderer
+ipcMain.on("request-user-data", (event) => {
+  const userData = readUserData();
+  if (userData) {
+    event.sender.send("user-data", userData);
+  }
+});
+
 async function login(correo, password) {
   console.log("Iniciando sesión...");
   try {
@@ -118,32 +145,6 @@ ipcMain.on("login-attempt", async (event, { correo, password }) => {
   await login(correo, password);
 });
 
-//=============================================================================================================
-//                                              FUNCIONES JSON
-//=============================================================================================================
-
-// Manejador para leer los datos del JSON
-ipcMain.handle("read-user-data", async () => {
-  return readUserData();
-});
-
-// Manejador para guardar datos en el JSON
-ipcMain.handle("save-user-data", async (event, data) => {
-  saveUserData(data);
-});
-
-// Manejador para eliminar el JSON
-ipcMain.handle("clear-user-data", async () => {
-  clearUserData();
-});
-
-// Manejador para enviar datos al renderer
-ipcMain.on("request-user-data", (event) => {
-  const userData = readUserData();
-  if (userData) {
-    event.sender.send("user-data", userData);
-  }
-});
 //=============================================================================================================
 //                                              FUNCIONES PIEZAS
 //=============================================================================================================

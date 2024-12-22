@@ -10,7 +10,6 @@ async function obtenerProduccionesPorMarca(idMarca) {
   try {
     const conn = await getConnection();
 
-    // Consulta para obtener las producciones de una marca específica
     const query = `
       SELECT * 
       FROM produccion 
@@ -18,10 +17,10 @@ async function obtenerProduccionesPorMarca(idMarca) {
       ORDER BY id_produccion
     `;
 
-    const producciones = await conn.query(query, [idMarca]);
+    const [producciones] = await conn.execute(query, [idMarca]);
 
     console.log("Producciones obtenidas para la marca:", producciones);
-    return producciones; // Devuelve las producciones obtenidas
+    return producciones;
   } catch (err) {
     console.error("Error al obtener las producciones:", err);
     throw err;
@@ -68,9 +67,9 @@ async function insertarProduccion(
             descripcion_produccion,
             FS_produccion
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
+    `;
 
-    const result = await conn.query(query, [
+    const [result] = await conn.execute(query, [
       idMarca,
       idPieza,
       folioProduccion,
@@ -83,7 +82,7 @@ async function insertarProduccion(
     ]);
 
     console.log("Producción insertada con éxito. ID:", result.insertId);
-    return result.insertId; // Devuelve el ID de la producción insertada
+    return result.insertId;
   } catch (err) {
     console.error("Error al insertar la producción:", err);
     throw err;
@@ -101,7 +100,7 @@ async function eliminarProduccion(idProduccion) {
     const conn = await getConnection();
 
     const query = "DELETE FROM produccion WHERE id_produccion = ?";
-    await conn.query(query, [idProduccion]);
+    await conn.execute(query, [idProduccion]);
 
     console.log(`Producción con ID ${idProduccion} eliminada con éxito.`);
   } catch (err) {
@@ -144,7 +143,7 @@ async function actualizarProduccion(idProduccion, datos) {
       idProduccion,
     ];
 
-    await conn.query(query, valores);
+    await conn.execute(query, valores);
 
     console.log(`Producción con ID ${idProduccion} actualizada con éxito.`);
   } catch (err) {
@@ -164,18 +163,18 @@ async function obtenerProduccionPorId(idProduccion) {
     const conn = await getConnection();
 
     const query = "SELECT * FROM produccion WHERE id_produccion = ?";
-    const [produccion] = await conn.query(query, [idProduccion]);
+    const [result] = await conn.execute(query, [idProduccion]);
 
-    if (produccion) {
-      console.log("Producción encontrada:", produccion);
-      return produccion; // Devuelve la producción encontrada
+    if (result.length > 0) {
+      console.log("Producción encontrada:", result[0]);
+      return result[0];
     } else {
       console.warn(`No se encontró ninguna producción con ID ${idProduccion}.`);
-      return null; // Si no se encuentra, devuelve null
+      return null;
     }
   } catch (err) {
     console.error("Error al obtener la producción por ID:", err);
-    throw err; // Lanza el error para manejarlo en otro lugar
+    throw err;
   }
 }
 

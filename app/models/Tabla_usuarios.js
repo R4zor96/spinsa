@@ -4,14 +4,20 @@ const { getConnection } = require("../config/Conexion.js");
  * Obtiene la información de un usuario por su ID.
  *
  * @param {number} idUsuario - ID del usuario.
- * @returns {Promise<Object>} - Información del usuario.
+ * @returns {Promise<Object|null>} - Información del usuario o `null` si no existe.
  */
 async function obtenerUsuarioPorId(idUsuario) {
   try {
     const conn = await getConnection();
     const query = "SELECT * FROM usuario WHERE id_usuario = ?";
-    const [usuario] = await conn.query(query, [idUsuario]);
-    return usuario;
+    const [result] = await conn.execute(query, [idUsuario]);
+
+    if (result.length > 0) {
+      return result[0];
+    } else {
+      console.warn(`No se encontró ningún usuario con ID ${idUsuario}.`);
+      return null;
+    }
   } catch (err) {
     console.error("Error al obtener el usuario:", err);
     throw err;
@@ -56,7 +62,7 @@ async function actualizarUsuario(idUsuario, datos) {
     query = query.slice(0, -2) + " WHERE id_usuario = ?";
     valores.push(idUsuario);
 
-    const result = await conn.query(query, valores);
+    const [result] = await conn.execute(query, valores);
 
     return result.affectedRows > 0;
   } catch (err) {

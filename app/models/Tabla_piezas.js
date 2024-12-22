@@ -11,22 +11,20 @@ async function insertarPieza(nombrePieza, descripcionPieza = null) {
   try {
     const conn = await getConnection();
 
-    // Consulta para insertar los datos en la tabla pieza
     const query = `
       INSERT INTO pieza (nombre_pieza, descripcion_pieza) 
       VALUES (?, ?)
     `;
-
-    // Ejecutar la consulta con los valores proporcionados
-    const result = await conn.query(query, [nombrePieza, descripcionPieza]);
+    const [result] = await conn.execute(query, [nombrePieza, descripcionPieza]);
 
     console.log("Pieza insertada con éxito. ID:", result.insertId);
-    return result.insertId; // Devolver el ID de la pieza insertada
+    return result.insertId;
   } catch (err) {
     console.error("Error al insertar la pieza:", err);
-    throw err; // Lanzar el error para manejarlo en otro lugar si es necesario
+    throw err;
   }
 }
+
 /**
  * Obtiene todos los registros de la tabla `pieza`, ordenados por `id_pieza`.
  *
@@ -36,14 +34,11 @@ async function obtenerPiezas() {
   try {
     const conn = await getConnection();
 
-    // Consulta para obtener los registros
     const query = `SELECT * FROM pieza ORDER BY id_pieza`;
-
-    // Ejecutar la consulta
-    const piezas = await conn.query(query);
+    const [piezas] = await conn.execute(query);
 
     console.log("Registros obtenidos de la tabla pieza:", piezas);
-    return piezas; // Devuelve los registros obtenidos
+    return piezas;
   } catch (err) {
     console.error("Error al obtener los registros de la tabla pieza:", err);
     throw err;
@@ -61,18 +56,18 @@ async function obtenerPiezaPorId(idPieza) {
     const conn = await getConnection();
 
     const query = "SELECT * FROM pieza WHERE id_pieza = ?";
-    const [pieza] = await conn.query(query, [idPieza]);
+    const [result] = await conn.execute(query, [idPieza]);
 
-    if (pieza) {
-      console.log("Pieza encontrada:", pieza);
-      return pieza; // Devuelve la pieza encontrada
+    if (result.length > 0) {
+      console.log("Pieza encontrada:", result[0]);
+      return result[0];
     } else {
       console.warn(`No se encontró ninguna pieza con ID ${idPieza}.`);
-      return null; // Si no se encuentra, devuelve null
+      return null;
     }
   } catch (err) {
     console.error("Error al obtener la pieza por ID:", err);
-    throw err; // Lanza el error para manejarlo en otro lugar
+    throw err;
   }
 }
 
@@ -87,7 +82,7 @@ async function eliminarPieza(idPieza) {
     const conn = await getConnection();
 
     const query = "DELETE FROM pieza WHERE id_pieza = ?";
-    await conn.query(query, [idPieza]);
+    await conn.execute(query, [idPieza]);
 
     console.log(`Pieza con ID ${idPieza} eliminada con éxito.`);
   } catch (err) {
@@ -110,7 +105,7 @@ async function actualizarPieza(idPieza, nombre, descripcion) {
 
     const query =
       "UPDATE pieza SET nombre_pieza = ?, descripcion_pieza = ? WHERE id_pieza = ?";
-    await conn.query(query, [nombre, descripcion, idPieza]);
+    await conn.execute(query, [nombre, descripcion, idPieza]);
 
     console.log(`Pieza con ID ${idPieza} actualizada con éxito.`);
   } catch (err) {
@@ -134,7 +129,7 @@ async function obtenerPiezasSinInventario(idMarca) {
       LEFT JOIN inventario i ON p.id_pieza = i.id_pieza AND i.id_marca = ?
       WHERE i.id_pieza IS NULL;
     `;
-    const piezas = await conn.query(query, [idMarca]);
+    const [piezas] = await conn.execute(query, [idMarca]);
     return piezas;
   } catch (err) {
     console.error("Error al obtener piezas sin inventario:", err);
