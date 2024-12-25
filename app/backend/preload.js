@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para enviar credenciales al proceso principal
   ejecutarLogin: (correo, password) =>
     ipcRenderer.send("login-attempt", { correo, password }),
+
+  obtenerProduccionesPorDiaSemana: () =>
+    ipcRenderer.invoke("obtener-producciones-por-dia-semana"), // Debe coincidir con el nombre del canal en main.js
   //=============================================================================================================
   //                                              FUNCIONES JSON
   //=============================================================================================================

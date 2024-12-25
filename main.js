@@ -213,6 +213,39 @@ ipcMain.handle("obtener-todas-las-producciones", async () => {
   }
 });
 
+ipcMain.handle("obtener-producciones-por-dia-semana", async () => {
+  try {
+    const conn = await getConnection(); // Obtén la conexión desde mysql2/promise
+
+    // Nueva consulta SQL para obtener las producciones agrupadas por día de la semana
+    const query = `
+      SELECT 
+        DAYOFWEEK(FS_produccion) AS dia_semana, 
+        COUNT(*) AS total 
+      FROM produccion
+      WHERE FS_produccion >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
+        AND FS_produccion <= CURDATE() + INTERVAL (6 - WEEKDAY(CURDATE())) DAY
+      GROUP BY dia_semana
+      ORDER BY dia_semana;
+    `;
+
+    // Ejecuta la consulta
+    const [result] = await conn.query(query);
+
+    // Formatea los datos para que el frontend los entienda
+    const produccionesPorDia = Array(7).fill(0); // Inicializa con 7 días (domingo a sábado)
+    result.forEach(({ dia_semana, total }) => {
+      produccionesPorDia[dia_semana - 1] = total; // Mapear valores
+    });
+
+    console.log("datos del array DatosSemana:", produccionesPorDia); // Depuración
+    return produccionesPorDia; // Devuelve los resultados
+  } catch (err) {
+    console.error("Error al obtener producciones por día de la semana:", err);
+    throw err; // Propaga el error
+  }
+});
+
 // Manejador para eliminar una producción
 ipcMain.handle("eliminar-produccion", async (event, idProduccion) => {
   try {

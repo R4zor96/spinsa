@@ -37,7 +37,7 @@ body {
   width: 100%;
   overflow: hidden;
   transition: all 0.35s ease-in-out;
-  background-color: #fafbfe;
+  /* background-color: #fafbfe; */
   margin-left: 70px; /* Asegurar que el contenido principal respete la barra lateral */
   transition: margin-left 0.25s ease-in-out; /* Animación suave al expandir/colapsar */
 }

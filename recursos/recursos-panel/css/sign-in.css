@@ -24,9 +24,9 @@ body {
   border-top-right-radius: 0;
 }
 .btn-primary {
-  background-color: #8777F2; /* Cambiar color de fondo */
-  border-color: #8777F2;     /* Cambiar color de borde */
-  color: #fff;               /* Cambiar color del texto */
+  background-color: #8777f2; /* Cambiar color de fondo */
+  border-color: #8777f2; /* Cambiar color de borde */
+  color: #fff; /* Cambiar color del texto */
 }
 
 .btn-primary:hover {
