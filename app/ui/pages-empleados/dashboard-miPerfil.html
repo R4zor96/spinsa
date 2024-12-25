@@ -218,12 +218,6 @@
               <span>Inventario</span>
             </a>
           </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
         </ul>
         <div class="sidebar-footer">
           <a
@@ -458,7 +452,7 @@
               if (result.success) {
                 setTimeout(() => {
                   location.reload();
-                }, 2000);
+                }, 1000);
               }
             } catch (err) {
               console.error("Error al actualizar el usuario:", err);

@@ -222,12 +222,6 @@
               <span>Inventario</span>
             </a>
           </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
         </ul>
         <div class="sidebar-footer">
           <a
@@ -276,40 +270,7 @@
                           <option value="4">Audi</option>
                         </select>
                         <div class="invalid-feedback">
-                          No ha seleccionado una pieza.
-                        </div>
-                      </div>
-
-                      <hr class="my-4" />
-
-                      <h4 class="mb-1">Información de la pieza</h4>
-                      <div class="col-sm-6">
-                        <label for="buscadorPiezas" class="form-label"
-                          >Buscador de piezas:</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="buscadorPiezas"
-                          placeholder="Nombre de la pieza..."
-                        />
-                      </div>
-
-                      <div class="col-sm-6">
-                        <label for="piezaSeleccionada" class="form-label"
-                          >Selecciona la Pieza:</label
-                        >
-
-                        <select
-                          id="piezaSeleccionada"
-                          name="piezaSeleccionada"
-                          class="form-select"
-                          required
-                        >
-                          <!-- Las opciones se generarán dinámicamente -->
-                        </select>
-                        <div class="invalid-feedback">
-                          No ha seleccionado una pieza.
+                          No ha seleccionado una marca.
                         </div>
                       </div>
 
@@ -348,21 +309,6 @@
                         />
                         <div class="invalid-feedback">
                           Se requiere un nombre válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
-                        <label for="cantidadProduccion" class="form-label"
-                          >Cantidad</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="cantidadProduccion"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una cantidad válida.
                         </div>
                       </div>
 
@@ -449,56 +395,13 @@
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        const selectPiezas = document.getElementById("piezaSeleccionada");
-        const buscadorPiezas = document.getElementById("buscadorPiezas");
-
-        try {
-          // Llamar a la función para obtener todas las piezas
-          const piezas = await window.electronAPI.obtenerPiezas();
-
-          if (!piezas || piezas.length === 0) {
-            console.error("No hay piezas disponibles.");
-            return;
-          }
-
-          // Llenar el desplegable con las piezas
-          piezas.forEach((pieza) => {
-            const option = document.createElement("option");
-            option.value = pieza.id_pieza; // El ID de la pieza será el valor
-            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
-            selectPiezas.appendChild(option);
-          });
-
-          // Agregar evento al buscador para filtrar las opciones
-          buscadorPiezas.addEventListener("input", () => {
-            const filtro = buscadorPiezas.value.toLowerCase();
-            const opciones = selectPiezas.options;
-
-            // Mostrar/ocultar opciones según el filtro
-            for (let i = 0; i < opciones.length; i++) {
-              const texto = opciones[i].textContent.toLowerCase();
-              opciones[i].style.display = texto.includes(filtro)
-                ? "block"
-                : "none";
-            }
-          });
-        } catch (err) {
-          console.error("Error al cargar las piezas:", err);
-        }
-      });
-
       // Agregar evento para registrar la producción
       document
         .getElementById("formProduccion")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-
-          const idPieza = document.getElementById("piezaSeleccionada").value;
           const folioProduccion =
             document.getElementById("folioProduccion").value;
-          const cantidadProduccion =
-            document.getElementById("cantidadProduccion").value;
           const estatusProduccion =
             document.getElementById("estatusProduccion").value;
           const aprobadoProduccion =
@@ -514,9 +417,7 @@
 
           const produccionData = {
             idMarca: id_marca,
-            idPieza,
             folioProduccion,
-            cantidadProduccion,
             estatusProduccion,
             aprobadoProduccion,
             nombreProduccion,

@@ -243,21 +243,6 @@
                       </div>
 
                       <div class="col-sm-4">
-                        <label for="cantidadProduccion" class="form-label"
-                          >Cantidad</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="cantidadProduccion"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una cantidad válida.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
                         <label for="estatusProduccion" class="form-label"
                           >Estatus</label
                         >
@@ -352,8 +337,6 @@
             produccion.folio_produccion;
           document.getElementById("nombreProduccion").value =
             produccion.nombre_produccion;
-          document.getElementById("cantidadProduccion").value =
-            produccion.cantidad_produccion;
           document.getElementById("estatusProduccion").value =
             produccion.estatus_produccion;
           document.getElementById("aprobadoProduccion").value =
@@ -388,8 +371,6 @@
                 document.getElementById("folioProduccion").value,
               nombre_produccion:
                 document.getElementById("nombreProduccion").value,
-              cantidad_produccion:
-                document.getElementById("cantidadProduccion").value,
               estatus_produccion:
                 document.getElementById("estatusProduccion").value,
               aprobado_produccion:

@@ -222,12 +222,6 @@
               <span>Inventario</span>
             </a>
           </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
         </ul>
         <div class="sidebar-footer">
           <a
@@ -257,39 +251,6 @@
                 <div class="col-md-12 col-lg-12">
                   <form id="formProduccion" class="needs-validation" novalidate>
                     <div class="row g-3">
-                      <h4 class="mb-1">Información de la pieza</h4>
-                      <div class="col-sm-6">
-                        <label for="buscadorPiezas" class="form-label"
-                          >Buscador de piezas:</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="buscadorPiezas"
-                          placeholder="Nombre de la pieza..."
-                        />
-                      </div>
-
-                      <div class="col-sm-6">
-                        <label for="piezaSeleccionada" class="form-label"
-                          >Selecciona la Pieza:</label
-                        >
-
-                        <select
-                          id="piezaSeleccionada"
-                          name="piezaSeleccionada"
-                          class="form-select"
-                          required
-                        >
-                          <!-- Las opciones se generarán dinámicamente -->
-                        </select>
-                        <div class="invalid-feedback">
-                          No ha seleccionado una pieza.
-                        </div>
-                      </div>
-
-                      <hr class="my-4" />
-
                       <h4 class="mb-1">Información de la producción</h4>
 
                       <div class="col-sm-4">
@@ -323,21 +284,6 @@
                         />
                         <div class="invalid-feedback">
                           Se requiere un nombre válido.
-                        </div>
-                      </div>
-
-                      <div class="col-sm-4">
-                        <label for="cantidadProduccion" class="form-label"
-                          >Cantidad</label
-                        >
-                        <input
-                          type="number"
-                          class="form-control"
-                          id="cantidadProduccion"
-                          required
-                        />
-                        <div class="invalid-feedback">
-                          Se requiere una cantidad válida.
                         </div>
                       </div>
 
@@ -418,6 +364,8 @@
         </div>
       </div>
     </div>
+    <input type="hidden" id="idMarca" value="" />
+
     <script src="../../../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="../../../recursos/recursos-panel/js/checkout.js"></script>
@@ -425,98 +373,81 @@
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        const selectPiezas = document.getElementById("piezaSeleccionada");
-        const buscadorPiezas = document.getElementById("buscadorPiezas");
+        const idMarcaInput = document.getElementById("idMarca");
+
+        if (!idMarcaInput) {
+          console.error(
+            "El campo oculto 'idMarca' no está presente en el DOM."
+          );
+          document.getElementById("mensaje").textContent =
+            "Error: No se pudo cargar el ID de la marca.";
+          return;
+        }
 
         try {
-          // Llamar a la función para obtener todas las piezas
-          const piezas = await window.electronAPI.obtenerPiezas();
+          // Obtener los datos del usuario desde el JSON
+          const userData = await window.electronAPI.readUserData();
 
-          if (!piezas || piezas.length === 0) {
-            console.error("No hay piezas disponibles.");
+          if (!userData[0] || !userData[0].id_marca) {
+            console.error(
+              "No se pudo obtener el ID de la marca del archivo JSON."
+            );
+            document.getElementById("mensaje").textContent =
+              "Error: No se pudo obtener el ID de la marca.";
             return;
           }
 
-          // Llenar el desplegable con las piezas
-          piezas.forEach((pieza) => {
-            const option = document.createElement("option");
-            option.value = pieza.id_pieza; // El ID de la pieza será el valor
-            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
-            selectPiezas.appendChild(option);
-          });
+          // Asignar el idMarca al campo oculto
+          idMarcaInput.value = userData[0].id_marca;
+        } catch (err) {
+          console.error("Error al cargar los datos del inventario:", err);
+          document.getElementById("mensaje").textContent =
+            "Hubo un error al cargar los datos. Intenta nuevamente.";
+        }
 
-          // Agregar evento al buscador para filtrar las opciones
-          buscadorPiezas.addEventListener("input", () => {
-            const filtro = buscadorPiezas.value.toLowerCase();
-            const opciones = selectPiezas.options;
+        // Agregar evento para registrar la producción
+        document
+          .getElementById("formProduccion")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const idMarca = idMarcaInput.value;
+            const folioProduccion =
+              document.getElementById("folioProduccion").value;
+            const estatusProduccion =
+              document.getElementById("estatusProduccion").value;
+            const aprobadoProduccion =
+              document.getElementById("aprobadoProduccion").value;
+            const nombreProduccion =
+              document.getElementById("nombreProduccion").value;
+            const descripcionProduccion =
+              document.getElementById("descripcionProduccion").value || null;
+            const fsProduccion =
+              document.getElementById("fsProduccion").value || null;
 
-            // Mostrar/ocultar opciones según el filtro
-            for (let i = 0; i < opciones.length; i++) {
-              const texto = opciones[i].textContent.toLowerCase();
-              opciones[i].style.display = texto.includes(filtro)
-                ? "block"
-                : "none";
+            const produccionData = {
+              idMarca,
+              folioProduccion,
+              estatusProduccion,
+              aprobadoProduccion,
+              nombreProduccion,
+              descripcionProduccion,
+              fsProduccion,
+            };
+
+            try {
+              const produccionId = await window.electronAPI.insertarProduccion(
+                produccionData
+              );
+              document.getElementById(
+                "mensaje"
+              ).textContent = `Producción registrada con éxito.`;
+            } catch (error) {
+              console.error("Error al registrar la producción:", error);
+              document.getElementById("mensaje").textContent =
+                "Error al registrar la producción. Por favor, intenta de nuevo.";
             }
           });
-        } catch (err) {
-          console.error("Error al cargar las piezas:", err);
-        }
       });
-
-      // Agregar evento para registrar la producción
-      document
-        .getElementById("formProduccion")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          const idPieza = document.getElementById("piezaSeleccionada").value;
-          const folioProduccion =
-            document.getElementById("folioProduccion").value;
-          const cantidadProduccion =
-            document.getElementById("cantidadProduccion").value;
-          const estatusProduccion =
-            document.getElementById("estatusProduccion").value;
-          const aprobadoProduccion =
-            document.getElementById("aprobadoProduccion").value; // Ahora obtenemos el valor del desplegable
-          const nombreProduccion =
-            document.getElementById("nombreProduccion").value;
-          const descripcionProduccion =
-            document.getElementById("descripcionProduccion").value || null;
-          const fsProduccion =
-            document.getElementById("fsProduccion").value || null;
-
-          // Obtener el idMarca desde el JSON
-          const userData = await window.electronAPI.readUserData();
-          if (!userData || !userData.id_marca) {
-            console.error("El ID de la marca no está disponible.");
-            return;
-          }
-
-          const produccionData = {
-            idMarca: userData.id_marca,
-            idPieza,
-            folioProduccion,
-            cantidadProduccion,
-            estatusProduccion,
-            aprobadoProduccion, // Se envía directamente el valor del desplegable
-            nombreProduccion,
-            descripcionProduccion,
-            fsProduccion,
-          };
-
-          try {
-            const produccionId = await window.electronAPI.insertarProduccion(
-              produccionData
-            );
-            document.getElementById(
-              "mensaje"
-            ).textContent = `Producción registrada con éxito.`;
-          } catch (error) {
-            console.error("Error al registrar la producción:", error);
-            document.getElementById("mensaje").textContent =
-              "Error al registrar la producción. Por favor, intenta de nuevo.";
-          }
-        });
     </script>
   </body>
 </html>

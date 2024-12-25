@@ -230,12 +230,6 @@
               <span>Inventario</span>
             </a>
           </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
         </ul>
         <div class="sidebar-footer">
           <a
@@ -307,9 +301,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Folio</th>
-                      <th scope="col">Nombre de Pieza</th>
                       <th scope="col">Nombre</th>
-                      <th scope="col">Cantidad</th>
                       <th scope="col">Estatus</th>
                       <th scope="col">Aprobación</th>
                       <th scope="col">Fecha Salida</th>
@@ -332,30 +324,10 @@
                 >
                   <thead>
                     <tr>
-                      <th scope="col">ID Inventario</th>
                       <th scope="col">Marca</th>
-                      <th scope="col">Nombre de Pieza</th>
+                      <th scope="col">Nombre</th>
                       <th scope="col">Cantidad</th>
                       <th scope="col">Fecha Último Movimiento</th>
-                      <th scope="col">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- Las filas se generarán dinámicamente aquí -->
-                  </tbody>
-                </table>
-              </div>
-
-              <hr />
-
-              <h2>PIEZAS</h2>
-              <div class="table-responsive small">
-                <table id="tablaPiezas" class="table table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">descripcion</th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
@@ -378,81 +350,6 @@
     <script src="../../../recursos/recursos-panel/js/sidebars.js"></script>
     <script src="../../../recursos/recursos-panel/js/color-modes.js"></script>
     <script>
-      //===============================================================================================================
-      //                                            FUNCIONES PIEZAS
-      //===============================================================================================================
-      document.addEventListener("DOMContentLoaded", async () => {
-        try {
-          const piezas = await window.electronAPI.obtenerPiezas();
-
-          const tabla = document.getElementById("tablaPiezas");
-
-          if (!tabla) {
-            console.error("La tabla con ID 'tablaPiezas' no se encontró.");
-            return;
-          }
-
-          piezas.forEach((pieza) => {
-            const fila = document.createElement("tr");
-
-            fila.innerHTML = `
-              <td>${pieza.id_pieza}</td>
-              <td>${pieza.nombre_pieza}</td>
-              <td>${pieza.descripcion_pieza}</td>
-              <td>
-                <div class="d-flex justify-content-center gap-1">
-                  <button
-                    onclick="actualizarPieza(${pieza.id_pieza})"
-                    type="button"
-                    class="btn btn-warning btn-sm px-2 py-1 shadow-sm rounded">
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
-                  <button
-                    onclick="eliminarPieza(${pieza.id_pieza})"
-                    type="button"
-                    class="btn btn-danger btn-sm px-2 py-1 shadow-sm rounded">
-                    <i class="bi bi-trash3-fill"></i>
-                  </button>
-                </div>
-              </td>
-            `;
-
-            tabla.querySelector("tbody").appendChild(fila);
-          });
-        } catch (err) {
-          console.error("Error al cargar los registros de piezas:", err);
-        }
-      });
-
-      function actualizarPieza(idPieza) {
-        console.log(
-          `Redirigiendo al dashboard para actualizar pieza con ID: ${idPieza}`
-        );
-        window.electronAPI.redirigirActualizarPieza(idPieza);
-      }
-
-      // Función para eliminar una pieza
-      async function eliminarPieza(idPieza) {
-        const confirmacion = confirm(
-          `¿Estás seguro de que deseas eliminar la pieza con ID ${idPieza}?`
-        );
-
-        if (!confirmacion) return; // Si el usuario cancela, no hace nada
-
-        try {
-          // Llamar a la función expuesta en el preload
-          await window.electronAPI.eliminarPieza(idPieza);
-          console.log(`Pieza con ID ${idPieza} eliminada con éxito.`);
-
-          // Recargar la tabla para reflejar los cambios
-          alert("Pieza eliminada con éxito.");
-          location.reload(); // Recarga la página para actualizar la lista
-        } catch (err) {
-          console.error("Error al eliminar la pieza:", err);
-          alert("Error al eliminar la pieza. Por favor, intenta de nuevo.");
-        }
-      }
-
       //===============================================================================================================
       //                                            FUNCIONES PRODUCCIONES
       //===============================================================================================================
@@ -478,28 +375,10 @@
           for (const produccion of producciones) {
             const fila = document.createElement("tr");
 
-            // Obtener el nombre de la pieza mediante su ID
-            let nombrePieza = "Pieza no encontrada";
-            try {
-              const pieza = await window.electronAPI.obtenerPiezaPorId(
-                produccion.id_pieza
-              );
-              if (pieza && pieza.nombre_pieza) {
-                nombrePieza = pieza.nombre_pieza;
-              }
-            } catch (error) {
-              console.error(
-                `Error al obtener el nombre de la pieza con ID ${produccion.id_pieza}:`,
-                error
-              );
-            }
-
             // Generar la fila
             fila.innerHTML = `
         <td>${produccion.folio_produccion}</td>
-        <td>${nombrePieza}</td>
         <td>${produccion.nombre_produccion}</td>
-        <td>${produccion.cantidad_produccion}</td>
         <td>${produccion.estatus_produccion}</td>
         <td>${
           produccion.aprobado_produccion === 1 ? "Aprobado" : "No aprobado"
@@ -587,10 +466,9 @@
           for (const inventario of inventarios) {
             const fila = document.createElement("tr");
 
-            // Si en tu consulta SQL ya estás haciendo JOIN con la tabla de piezas y marcas,
-            // tendrás inventario.nombre_pieza y inventario.nombre_marca:
+            // Si en tu consulta SQL ya estás haciendo JOIN con la tabla de marcas,
+            // tendrás inventario.nombre_marca:
             //  - inventario.nombre_marca
-            //  - inventario.nombre_pieza
 
             // Formatea la fecha en caso de que exista
             const fechaFormateada = inventario.fecha_ultimo_movimiento
@@ -601,9 +479,8 @@
 
             // Generar la fila
             fila.innerHTML = `
-          <td>${inventario.id_inventario}</td>
           <td>${inventario.nombre_marca || "Marca desconocida"}</td>
-          <td>${inventario.nombre_pieza || "Pieza no encontrada"}</td>
+          <td>${inventario.nombre_inventario}</td>
           <td>${inventario.cantidad_inventario}</td>
           <td>${fechaFormateada}</td>
           <td>

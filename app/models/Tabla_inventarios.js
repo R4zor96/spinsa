@@ -4,26 +4,26 @@ const { getConnection } = require("../config/Conexion.js");
  * Inserta un nuevo registro de inventario.
  *
  * @param {number} idMarca - ID de la marca.
- * @param {number} idPieza - ID de la pieza.
+ * @param {string} nombreInventario - Fecha del último movimiento.
  * @param {number} cantidadInventario - Cantidad del inventario.
  * @param {string} fechaUltimoMovimiento - Fecha del último movimiento.
  * @returns {Promise<number>} - ID del inventario recién creado.
  */
 async function insertarInventario(
   idMarca,
-  idPieza,
+  nombreInventario,
   cantidadInventario,
   fechaUltimoMovimiento
 ) {
   try {
     const conn = await getConnection();
     const query = `
-      INSERT INTO inventario (id_marca, id_pieza, cantidad_inventario, fecha_ultimo_movimiento) 
+      INSERT INTO inventario (id_marca, nombre_inventario, cantidad_inventario, fecha_ultimo_movimiento) 
       VALUES (?, ?, ?, ?)
     `;
     const [result] = await conn.execute(query, [
       idMarca,
-      idPieza,
+      nombreInventario,
       cantidadInventario,
       fechaUltimoMovimiento,
     ]);
@@ -115,10 +115,11 @@ async function actualizarInventario(idInventario, datos) {
 
     const query = `
       UPDATE inventario
-      SET cantidad_inventario = ?, fecha_ultimo_movimiento = ?
+      SET nombre_inventario = ?, cantidad_inventario = ?, fecha_ultimo_movimiento = ?
       WHERE id_inventario = ?
     `;
     await conn.execute(query, [
+      datos.nombre_inventario,
       datos.cantidad_inventario,
       datos.fecha_ultimo_movimiento,
       idInventario,
@@ -133,18 +134,16 @@ async function actualizarInventario(idInventario, datos) {
 
 /**
  * Obtiene todos los inventarios existentes, incluyendo
- * la marca y la pieza asociada.
  * @returns {Promise<Array>} - Lista completa de inventarios.
  */
 async function obtenerTodosLosInventarios() {
   try {
     const conn = await getConnection();
     const query = `
-      SELECT i.*, m.nombre_marca, p.nombre_pieza
+      SELECT i.*, m.nombre_marca
       FROM inventario i
       JOIN marca m ON i.id_marca = m.id_marca
-      JOIN pieza p ON i.id_pieza = p.id_pieza
-      ORDER BY i.id_inventario ASC
+      ORDER BY i.id_marca ASC
     `;
     const [inventarios] = await conn.execute(query);
     return inventarios;

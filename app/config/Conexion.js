@@ -1,6 +1,16 @@
 //const mysql = require("promise-mysql");
 const mysql = require("mysql2/promise");
 
+/*
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "spinsa",
+  port: 3306,
+});
+*/
+
 const connection = mysql.createConnection({
   host: "junction.proxy.rlwy.net",
   user: "root",

@@ -4,6 +4,8 @@ const path = require("path");
 const fs = require("fs");
 
 const userDataPath = path.join(app.getPath("userData"), "user_data.json");
+//const userDataPath = path.join(__dirname, "user_data.json");
+
 console.log("Ruta del archivo JSON:", userDataPath);
 
 let mainWindow;
@@ -146,138 +148,6 @@ ipcMain.on("login-attempt", async (event, { correo, password }) => {
 });
 
 //=============================================================================================================
-//                                              FUNCIONES PIEZAS
-//=============================================================================================================
-const {
-  insertarPieza,
-  obtenerPiezas,
-  obtenerPiezaPorId,
-  eliminarPieza,
-  actualizarPieza,
-  obtenerPiezasSinInventario,
-} = require("./app/models/Tabla_piezas.js");
-
-// Manejador para insertar pieza
-ipcMain.handle(
-  "insertar-pieza",
-  async (event, { nombrePieza, descripcionPieza }) => {
-    try {
-      const piezaId = await insertarPieza(nombrePieza, descripcionPieza);
-
-      // Programar recarga después de 2 segundos
-      setTimeout(() => {
-        if (mainWindow) {
-          mainWindow.webContents.reload(); // Recargar la página actual
-        }
-      }, 1350); // Esperar 2000 ms (2 segundos)
-
-      return piezaId; // Devuelve el ID de la pieza inmediatamente
-    } catch (err) {
-      console.error("Error al insertar la pieza:", err);
-      throw err; // Lanza el error para manejarlo en el renderer
-    }
-  }
-);
-
-// Manejador para obtener los registros de piezas
-ipcMain.handle("obtener-piezas", async () => {
-  try {
-    const piezas = await obtenerPiezas();
-    return piezas; // Devuelve los registros al renderer
-  } catch (err) {
-    console.error("Error al obtener los registros de piezas:", err);
-    throw err; // Lanza el error para manejarlo en el renderer
-  }
-});
-
-// Manejador para obtener una pieza por su ID
-ipcMain.handle("obtener-pieza-por-id", async (event, idPieza) => {
-  try {
-    const pieza = await obtenerPiezaPorId(idPieza);
-    return pieza;
-  } catch (err) {
-    console.error(`Error al obtener la pieza con ID ${idPieza}:`, err);
-    throw err;
-  }
-});
-
-// Manejador para eliminar una pieza
-ipcMain.handle("eliminar-pieza", async (event, idPieza) => {
-  try {
-    await eliminarPieza(idPieza);
-    console.log(`Pieza con ID ${idPieza} eliminada.`);
-  } catch (err) {
-    console.error(`Error al eliminar la pieza con ID ${idPieza}:`, err);
-    throw err; // Lanza el error para manejarlo en el renderer
-  }
-});
-
-// Manejador para redirigir al dashboard de actualización
-ipcMain.handle("redirigir-actualizar-pieza", async (event, idPieza) => {
-  try {
-    // Leer los datos del usuario desde el archivo JSON
-    const userData = readUserData();
-    if (!userData || !userData.id_rol) {
-      throw new Error("No se encontró la información del usuario o el id_rol.");
-    }
-
-    const { id_rol } = userData;
-
-    // Redirigir según el id_rol
-    if (id_rol === 128) {
-      mainWindow.loadFile(
-        "src/app/ui/pages-admin/dashboard-actualizar-pieza.html"
-      );
-    } else {
-      mainWindow.loadFile(
-        "src/app/ui/pages-empleados/dashboard-actualizar-pieza.html"
-      );
-    }
-
-    // Pasar el ID de la pieza seleccionada al dashboard
-    mainWindow.webContents.once("did-finish-load", async () => {
-      const pieza = await obtenerPiezaPorId(idPieza);
-      if (pieza) {
-        mainWindow.webContents.send("cargar-pieza", pieza);
-      } else {
-        mainWindow.webContents.send(
-          "cargar-pieza-error",
-          `No se encontró la pieza con ID ${idPieza}`
-        );
-      }
-    });
-  } catch (err) {
-    console.error("Error al redirigir al dashboard de actualización:", err);
-  }
-});
-
-// Manejador para actualizar una pieza
-ipcMain.handle(
-  "actualizar-pieza",
-  async (event, { idPieza, nombre, descripcion }) => {
-    try {
-      await actualizarPieza(idPieza, nombre, descripcion);
-      console.log(`Pieza con ID ${idPieza} actualizada con éxito.`);
-      return { success: true, message: "Pieza actualizada con éxito." };
-    } catch (err) {
-      console.error(`Error al actualizar la pieza con ID ${idPieza}:`, err);
-      return { success: false, message: "Error al actualizar la pieza." };
-    }
-  }
-);
-
-// Manejador para obtener piezas sin inventario
-ipcMain.handle("obtener-piezas-sin-inventario", async (event, idMarca) => {
-  try {
-    const piezas = await obtenerPiezasSinInventario(idMarca);
-    return piezas; // Devuelve las piezas que no tienen inventario
-  } catch (err) {
-    console.error("Error al obtener piezas sin inventario:", err);
-    throw err; // Lanza el error para manejarlo en el renderer
-  }
-});
-
-//=============================================================================================================
 //                                              FUNCIONES PRODUCCIONES
 //=============================================================================================================
 const {
@@ -293,9 +163,7 @@ ipcMain.handle("insertar-produccion", async (event, produccionData) => {
   try {
     const produccionId = await insertarProduccion(
       produccionData.idMarca,
-      produccionData.idPieza,
       produccionData.folioProduccion,
-      produccionData.cantidadProduccion,
       produccionData.estatusProduccion,
       produccionData.aprobadoProduccion,
       produccionData.nombreProduccion,
@@ -308,7 +176,7 @@ ipcMain.handle("insertar-produccion", async (event, produccionData) => {
       if (mainWindow) {
         mainWindow.webContents.reload(); // Recargar la página actual
       }
-    }, 1350); // Esperar 2000 ms (2 segundos)
+    }, 1000); // Esperar 2000 ms (2 segundos)
 
     return produccionId; // Devuelve el ID de la producción insertada
   } catch (err) {
@@ -366,13 +234,13 @@ ipcMain.handle(
     try {
       // Leer los datos del usuario desde el archivo JSON
       const userData = readUserData();
-      if (!userData || !userData.id_rol) {
+      if (!userData[0] || !userData[0].id_rol) {
         throw new Error(
           "No se encontró la información del usuario o el id_rol."
         );
       }
 
-      const { id_rol } = userData;
+      const { id_rol } = userData[0];
 
       // Redirigir según el id_rol
       if (id_rol === 128) {
@@ -384,7 +252,6 @@ ipcMain.handle(
           "src/app/ui/pages-empleados/dashboard-actualizar-produccion.html"
         );
       }
-      //("src/app/ui/pages-empleados/dashboard-actualizar-pieza.html");
 
       // Cargar los datos de la producción seleccionada
       mainWindow.webContents.once("did-finish-load", async () => {
@@ -478,12 +345,12 @@ ipcMain.handle(
   "insertar-inventario",
   async (
     event,
-    { idMarca, idPieza, cantidadInventario, fechaUltimoMovimiento }
+    { idMarca, nombreInventario, cantidadInventario, fechaUltimoMovimiento }
   ) => {
     try {
       const inventarioId = await insertarInventario(
         idMarca,
-        idPieza,
+        nombreInventario,
         cantidadInventario,
         fechaUltimoMovimiento
       );
@@ -533,13 +400,13 @@ ipcMain.handle(
     try {
       // Leer los datos del usuario desde el archivo JSON
       const userData = readUserData();
-      if (!userData || !userData.id_rol) {
+      if (!userData[0] || !userData[0].id_rol) {
         throw new Error(
           "No se encontró la información del usuario o el id_rol."
         );
       }
 
-      const { id_rol } = userData;
+      const { id_rol } = userData[0];
 
       // Redirigir según el rol del usuario
       if (id_rol === 128) {

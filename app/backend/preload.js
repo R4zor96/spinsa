@@ -7,7 +7,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Función para enviar credenciales al proceso principal
   ejecutarLogin: (correo, password) =>
     ipcRenderer.send("login-attempt", { correo, password }),
-
   //=============================================================================================================
   //                                              FUNCIONES JSON
   //=============================================================================================================
@@ -22,46 +21,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   // Escuchar eventos desde el proceso principal
   onUserData: (callback) => ipcRenderer.on("user-data", callback),
-
-  //=============================================================================================================
-  //                                              FUNCIONES PIEZAS
-  //=============================================================================================================
-  // Función para insertar pieza
-  insertarPieza: (nombrePieza, descripcionPieza) =>
-    ipcRenderer.invoke("insertar-pieza", { nombrePieza, descripcionPieza }),
-
-  // Función para obtener los registros de piezas
-  obtenerPiezas: () => ipcRenderer.invoke("obtener-piezas"),
-
-  // Función para obtener una pieza por su ID
-  obtenerPiezaPorId: (idPieza) =>
-    ipcRenderer.invoke("obtener-pieza-por-id", idPieza),
-
-  // Función para eliminar una pieza
-  eliminarPieza: (idPieza) => ipcRenderer.invoke("eliminar-pieza", idPieza),
-
-  // Redirigir al dashboard de actualización
-  redirigirActualizarPieza: (idPieza) =>
-    ipcRenderer.invoke("redirigir-actualizar-pieza", idPieza),
-
-  // Actualizar una pieza
-  actualizarPieza: (data) => ipcRenderer.invoke("actualizar-pieza", data),
-
-  // Recibir datos de la pieza seleccionada
-  onCargarPieza: (callback) =>
-    ipcRenderer.on("cargar-pieza", (_event, pieza) => callback(pieza)),
-
-  // Manejar errores al cargar la pieza
-  onCargarPiezaError: (callback) =>
-    ipcRenderer.on("cargar-pieza-error", (_event, error) => callback(error)),
-
-  // Función para obtener las piezas que no están registradas en el inventario
-  obtenerPiezasSinInventario: (idMarca) =>
-    ipcRenderer.invoke("obtener-piezas-sin-inventario", idMarca),
-
   //=============================================================================================================
   //                                              FUNCIONES PRODUCCIONES
   //=============================================================================================================
+
   //Funcion para insertar producciones por su marca:
   insertarProduccion: (produccionData) =>
     ipcRenderer.invoke("insertar-produccion", produccionData),

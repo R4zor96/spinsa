@@ -31,9 +31,7 @@ async function obtenerProduccionesPorMarca(idMarca) {
  * Inserta una nueva producción en la base de datos.
  *
  * @param {number} idMarca - ID de la marca asociada.
- * @param {number} idPieza - ID de la pieza asociada.
  * @param {string} folioProduccion - Folio de la producción.
- * @param {number} cantidadProduccion - Cantidad producida.
  * @param {string} estatusProduccion - Estatus de la producción.
  * @param {number} aprobadoProduccion - Si está aprobada (1) o no (0).
  * @param {string} nombreProduccion - Nombre de la producción.
@@ -43,9 +41,7 @@ async function obtenerProduccionesPorMarca(idMarca) {
  */
 async function insertarProduccion(
   idMarca,
-  idPieza,
   folioProduccion,
-  cantidadProduccion,
   estatusProduccion,
   aprobadoProduccion,
   nombreProduccion,
@@ -58,22 +54,18 @@ async function insertarProduccion(
     const query = `
         INSERT INTO produccion (
             id_marca,
-            id_pieza,
             folio_produccion,
-            cantidad_produccion,
             estatus_produccion,
             aprobado_produccion,
             nombre_produccion,
             descripcion_produccion,
             FS_produccion
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     const [result] = await conn.execute(query, [
       idMarca,
-      idPieza,
       folioProduccion,
-      cantidadProduccion,
       estatusProduccion,
       aprobadoProduccion,
       nombreProduccion,
@@ -124,7 +116,6 @@ async function actualizarProduccion(idProduccion, datos) {
       UPDATE produccion
       SET folio_produccion = ?, 
           nombre_produccion = ?, 
-          cantidad_produccion = ?, 
           estatus_produccion = ?, 
           aprobado_produccion = ?, 
           descripcion_produccion = ?, 
@@ -135,7 +126,6 @@ async function actualizarProduccion(idProduccion, datos) {
     const valores = [
       datos.folio_produccion,
       datos.nombre_produccion,
-      datos.cantidad_produccion,
       datos.estatus_produccion,
       datos.aprobado_produccion,
       datos.descripcion_produccion,

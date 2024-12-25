@@ -209,18 +209,20 @@
                   >
                     <div class="row g-3">
                       <div class="col-sm-4">
-                        <label for="nombrePieza" class="form-label"
-                          >Nombre de la Pieza</label
+                        <label for="nombreInventario" class="form-label"
+                          >Nombre</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="nombrePieza"
+                          id="nombreInventario"
                           placeholder=""
                           value=""
-                          readonly
-                          disabled
+                          required
                         />
+                        <div class="invalid-feedback">
+                          Se requiere un nombre válido.
+                        </div>
                       </div>
 
                       <div class="col-sm-4">
@@ -294,14 +296,6 @@
             // 1. Guardamos el ID de este inventario en una variable global
             window.inventarioId = inventario.id_inventario;
 
-            // 2. Obtener el nombre de la pieza
-            const pieza = await window.electronAPI.obtenerPiezaPorId(
-              inventario.id_pieza
-            );
-            const nombrePieza = pieza
-              ? pieza.nombre_pieza
-              : "Pieza no encontrada";
-
             // 3. Formatear la fecha (YYYY-MM-DD)
             let fechaMovimiento = "";
             if (inventario.fecha_ultimo_movimiento) {
@@ -313,7 +307,8 @@
             }
 
             // 4. Rellenar los campos del formulario
-            document.getElementById("nombrePieza").value = nombrePieza;
+            document.getElementById("nombreInventario").value =
+              inventario.nombre_inventario;
             document.getElementById("cantidadInventario").value =
               inventario.cantidad_inventario;
             document.getElementById("fechaUltimoMovimiento").value =
@@ -329,6 +324,8 @@
         formActualizarInventario.addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const nombreInventario =
+            document.getElementById("nombreInventario").value;
           const cantidadInventario =
             document.getElementById("cantidadInventario").value;
           const fechaUltimoMovimiento = document.getElementById(
@@ -337,6 +334,7 @@
 
           // Empaquetar los datos en un objeto
           const inventarioActualizado = {
+            nombre_inventario: nombreInventario,
             cantidad_inventario: cantidadInventario,
             fecha_ultimo_movimiento: fechaUltimoMovimiento,
           };
@@ -358,7 +356,7 @@
               setTimeout(() => {
                 // Redirigir al dashboard principal (o a donde gustes)
                 window.location.href = "dashboard.html";
-              }, 2000);
+              }, 1000);
             } else {
               // Mostrar mensaje de error
               document.getElementById("mensaje").textContent = result.message;

@@ -222,12 +222,6 @@
               <span>Inventario</span>
             </a>
           </li>
-          <li class="sidebar-item">
-            <a href="./dashboard-piezas.html" class="sidebar-link">
-              <i class="bi bi-puzzle"></i>
-              <span>Piezas</span>
-            </a>
-          </li>
         </ul>
         <div class="sidebar-footer">
           <a
@@ -257,37 +251,24 @@
                 <div class="col-md-12 col-lg-12">
                   <form id="formInventario" class="needs-validation" novalidate>
                     <div class="row g-3">
-                      <h4 class="mb-1">Información de la pieza</h4>
-                      <div class="col-sm-6">
-                        <label for="buscadorPiezas" class="form-label"
-                          >Buscador de piezas:</label
+                      <h4 class="mb-1">Información del inventario</h4>
+
+                      <div class="col-sm-4">
+                        <label for="nombreInventario" class="form-label"
+                          >Nombre</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="buscadorPiezas"
-                          placeholder="Nombre de la pieza..."
-                        />
-                      </div>
-
-                      <div class="col-sm-6">
-                        <label for="piezaSeleccionada" class="form-label"
-                          >Selecciona la Pieza:</label
-                        >
-
-                        <select
-                          id="piezaSeleccionada"
-                          name="piezaSeleccionada"
-                          class="form-select"
+                          id="nombreInventario"
+                          placeholder=""
+                          value=""
                           required
-                        >
-                          <!-- Las opciones se generarán dinámicamente -->
-                        </select>
+                        />
+                        <div class="invalid-feedback">
+                          Se requiere un nombre válido.
+                        </div>
                       </div>
-
-                      <hr class="my-4" />
-
-                      <h4 class="mb-1">Información del inventario</h4>
 
                       <div class="col-sm-4">
                         <label for="cantidadInventario" class="form-label"
@@ -354,32 +335,32 @@
       document.addEventListener("DOMContentLoaded", function () {
         const fechaInput = document.getElementById("fechaUltimoMovimiento");
         if (fechaInput) {
-          // Obtener la fecha actual en formato ISO (YYYY-MM-DD)
-          const hoy = new Date().toISOString().split("T")[0];
+          // Obtener la fecha actual en la zona horaria de México
+          const ahora = new Date();
+          const opciones = {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "America/Mexico_City",
+          };
+
+          // Formatear la fecha como YYYY-MM-DD
+          const hoy = new Intl.DateTimeFormat("en-CA", opciones)
+            .format(ahora)
+            .replace(/\//g, "-");
+
           // Establecer la fecha como valor predeterminado
           fechaInput.value = hoy;
         }
       });
 
       document.addEventListener("DOMContentLoaded", async () => {
-        const selectPiezas = document.getElementById("piezaSeleccionada");
-        const buscadorPiezas = document.getElementById("buscadorPiezas");
-        const idMarcaInput = document.getElementById("idMarca");
-
-        if (!idMarcaInput) {
-          console.error(
-            "El campo oculto 'idMarca' no está presente en el DOM."
-          );
-          document.getElementById("mensaje").textContent =
-            "Error: No se pudo cargar el ID de la marca.";
-          return;
-        }
-
+        let id_marca = ""; // Variable para almacenar el ID de la marca
         try {
           // Obtener los datos del usuario desde el JSON
           const userData = await window.electronAPI.readUserData();
 
-          if (!userData || !userData.id_marca) {
+          if (!userData[0] || !userData[0].id_marca) {
             console.error(
               "No se pudo obtener el ID de la marca del archivo JSON."
             );
@@ -388,46 +369,14 @@
             return;
           }
 
-          // Asignar el idMarca al campo oculto
-          idMarcaInput.value = userData.id_marca;
-
-          // Llamar a la función para obtener las piezas sin inventario
-          const piezas = await window.electronAPI.obtenerPiezasSinInventario(
-            userData.id_marca
-          );
-
-          if (!piezas || piezas.length === 0) {
-            console.error("No hay piezas disponibles para esta marca.");
-            document.getElementById("mensaje").textContent =
-              "No hay piezas disponibles para registrar en el inventario.";
-            return;
-          }
-
-          // Llenar el desplegable con las piezas
-          piezas.forEach((pieza) => {
-            const option = document.createElement("option");
-            option.value = pieza.id_pieza; // El ID de la pieza será el valor
-            option.textContent = pieza.nombre_pieza; // El nombre será el texto mostrado
-            selectPiezas.appendChild(option);
-          });
-
-          // Agregar evento al buscador para filtrar las opciones
-          buscadorPiezas.addEventListener("input", () => {
-            const filtro = buscadorPiezas.value.toLowerCase();
-            const opciones = selectPiezas.options;
-
-            // Mostrar/ocultar opciones según el filtro
-            for (let i = 0; i < opciones.length; i++) {
-              const texto = opciones[i].textContent.toLowerCase();
-              opciones[i].style.display = texto.includes(filtro)
-                ? "block"
-                : "none";
-            }
-          });
+          // Asignar el idMarca a la variable
+          id_marca = userData[0].id_marca;
+          console.log("DEPURACION: id de la marca: ", id_marca);
         } catch (err) {
           console.error("Error al cargar los datos del inventario:", err);
           document.getElementById("mensaje").textContent =
             "Hubo un error al cargar los datos. Intenta nuevamente.";
+          return;
         }
 
         // Manejar el evento de registrar inventario
@@ -436,17 +385,17 @@
           .addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const idMarca = idMarcaInput.value;
-            const idPieza = document.getElementById("piezaSeleccionada").value;
             const cantidadInventario =
               document.getElementById("cantidadInventario").value;
+            const nombreInventario =
+              document.getElementById("nombreInventario").value;
             const fechaUltimoMovimiento = document.getElementById(
               "fechaUltimoMovimiento"
             ).value;
 
             const inventarioData = {
-              idMarca,
-              idPieza,
+              idMarca: id_marca, // Usar directamente id_marca
+              nombreInventario,
               cantidadInventario,
               fechaUltimoMovimiento,
             };
@@ -459,7 +408,7 @@
                 "Inventario registrado con éxito.";
               setTimeout(() => {
                 location.reload(); // Recargar la página después de 2 segundos
-              }, 2000);
+              }, 1000);
             } catch (error) {
               console.error("Error al registrar el inventario:", error);
               document.getElementById("mensaje").textContent =
