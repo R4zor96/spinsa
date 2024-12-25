@@ -294,18 +294,110 @@
               <hr />
 
               <h2>PRODUCCIÓN</h2>
-              <div class="table-responsive small">
+              <div>
+                <input
+                  type="text"
+                  id="searchProducciones"
+                  onkeyup="filterTableProducciones()"
+                  placeholder="Buscar por Folio o Nombre"
+                  style="
+                    margin-bottom: 10px;
+                    width: 100%;
+                    padding: 5px;
+                    font-size: 14px;
+                  "
+                />
+              </div>
+              <div
+                class="table-responsive small"
+                style="max-height: 400px; overflow-y: auto"
+              >
                 <table
                   id="tablaProducciones"
                   class="table table-striped table-sm"
                 >
                   <thead>
                     <tr>
-                      <th scope="col">Folio</th>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Estatus</th>
-                      <th scope="col">Aprobación</th>
-                      <th scope="col">Fecha Salida</th>
+                      <th scope="col">
+                        Folio
+                        <button
+                          id="sortButton0"
+                          onclick="toggleSort(0)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Nombre
+                        <button
+                          id="sortButton1"
+                          onclick="toggleSort(1)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Estatus
+                        <button
+                          id="sortButton2"
+                          onclick="toggleSort(2)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Aprobación
+                        <button
+                          id="sortButton3"
+                          onclick="toggleSort(3)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Fecha Salida
+                        <button
+                          id="sortButton4"
+                          onclick="toggleSort(4)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
@@ -318,16 +410,78 @@
               <hr />
 
               <h2>INVENTARIO</h2>
-              <div class="table-responsive small">
+              <div>
+                <input
+                  type="text"
+                  id="searchInventarios"
+                  onkeyup="filterTableInventarios()"
+                  placeholder="Buscar por Nombre"
+                  style="
+                    margin-bottom: 10px;
+                    width: 100%;
+                    padding: 5px;
+                    font-size: 14px;
+                  "
+                />
+              </div>
+              <div
+                class="table-responsive small"
+                style="max-height: 400px; overflow-y: auto"
+              >
                 <table
                   id="tablaInventarios"
                   class="table table-striped table-sm"
                 >
                   <thead>
                     <tr>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Cantidad</th>
-                      <th scope="col">Fecha Último Movimiento</th>
+                      <th scope="col">
+                        Nombre
+                        <button
+                          id="sortButtonInv1"
+                          onclick="toggleSortInventarios(0)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Cantidad
+                        <button
+                          id="sortButtonInv2"
+                          onclick="toggleSortInventarios(1)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
+                      <th scope="col">
+                        Fecha Último Movimiento
+                        <button
+                          id="sortButtonInv3"
+                          onclick="toggleSortInventarios(2)"
+                          style="
+                            background: none;
+                            border: none;
+                            font-size: 10px;
+                            cursor: pointer;
+                          "
+                        >
+                          <span style="color: gray">&#9650;</span
+                          ><span style="color: gray">&#9660;</span>
+                        </button>
+                      </th>
                       <th scope="col">Acciones</th>
                     </tr>
                   </thead>
@@ -353,6 +507,73 @@
       //===============================================================================================================
       //                                            FUNCIONES PRODUCCIONES
       //===============================================================================================================
+      //===================================== Funciones para la tabla =================================================
+      let sortDirections = {};
+
+      function toggleSort(columnIndex) {
+        for (let i = 0; i < 5; i++) {
+          const button = document.getElementById(`sortButton${i}`);
+          button.innerHTML =
+            '<span style="color: gray;">&#9650;</span><span style="color: gray;">&#9660;</span>';
+        }
+
+        if (sortDirections[columnIndex] === undefined) {
+          sortDirections[columnIndex] = true; // Default to ascending
+        }
+
+        const ascending = sortDirections[columnIndex];
+        sortTable(columnIndex, ascending);
+        sortDirections[columnIndex] = !ascending; // Toggle direction
+
+        const activeButton = document.getElementById(
+          `sortButton${columnIndex}`
+        );
+        activeButton.innerHTML = ascending
+          ? '<span style="color: #5a23c8;">&#9650;</span><span style="color: gray;">&#9660;</span>'
+          : '<span style="color: gray;">&#9650;</span><span style="color: #5a23c8;">&#9660;</span>';
+      }
+
+      function sortTable(columnIndex, ascending) {
+        const table = document.getElementById("tablaProducciones");
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+          const aText = a.cells[columnIndex].textContent.trim();
+          const bText = b.cells[columnIndex].textContent.trim();
+
+          if (!isNaN(aText) && !isNaN(bText)) {
+            return ascending ? aText - bText : bText - aText;
+          }
+
+          return ascending
+            ? aText.localeCompare(bText)
+            : bText.localeCompare(aText);
+        });
+
+        rows.forEach((row) => tbody.appendChild(row));
+      }
+      function filterTableProducciones() {
+        const input = document.getElementById("searchProducciones");
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById("tablaProducciones");
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+          const folio =
+            rows[i].getElementsByTagName("td")[0]?.textContent.toLowerCase() ||
+            "";
+          const nombre =
+            rows[i].getElementsByTagName("td")[1]?.textContent.toLowerCase() ||
+            "";
+          if (folio.includes(filter) || nombre.includes(filter)) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      }
+      //===================================== Funciones para el funcionamiento ========================================
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           // Verificar y obtener el valor del id_marca desde el campo oculto
@@ -468,7 +689,71 @@
       //===============================================================================================================
       //                                            FUNCIONES INVENTARIO
       //===============================================================================================================
+      //===================================== Funciones para la tabla =================================================
+      let sortDirectionsInventarios = {};
 
+      function toggleSortInventarios(columnIndex) {
+        const buttons = document.querySelectorAll(
+          "#tablaInventarios th button"
+        );
+
+        buttons.forEach((button) => {
+          button.innerHTML =
+            '<span style="color: gray;">&#9650;</span><span style="color: gray;">&#9660;</span>';
+        });
+
+        if (sortDirectionsInventarios[columnIndex] === undefined) {
+          sortDirectionsInventarios[columnIndex] = true; // Default to ascending
+        }
+
+        const ascending = sortDirectionsInventarios[columnIndex];
+        sortTableInventarios(columnIndex, ascending);
+        sortDirectionsInventarios[columnIndex] = !ascending; // Toggle direction
+
+        const activeButton = buttons[columnIndex];
+        activeButton.innerHTML = ascending
+          ? '<span style="color: #5a23c8;">&#9650;</span><span style="color: gray;">&#9660;</span>'
+          : '<span style="color: gray;">&#9650;</span><span style="color: #5a23c8;">&#9660;</span>';
+      }
+
+      function sortTableInventarios(columnIndex, ascending) {
+        const table = document.getElementById("tablaInventarios");
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.rows);
+
+        rows.sort((a, b) => {
+          const aText = a.cells[columnIndex].textContent.trim();
+          const bText = b.cells[columnIndex].textContent.trim();
+
+          if (!isNaN(aText) && !isNaN(bText)) {
+            return ascending ? aText - bText : bText - aText;
+          }
+
+          return ascending
+            ? aText.localeCompare(bText)
+            : bText.localeCompare(aText);
+        });
+
+        rows.forEach((row) => tbody.appendChild(row));
+      }
+      function filterTableInventarios() {
+        const input = document.getElementById("searchInventarios");
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById("tablaInventarios");
+        const rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+          const nombre =
+            rows[i].getElementsByTagName("td")[0]?.textContent.toLowerCase() ||
+            "";
+          if (nombre.includes(filter)) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      }
+      //===================================== Funciones para el funcionamiento ========================================
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           // Verificar y obtener el valor del id_marca desde el campo oculto
